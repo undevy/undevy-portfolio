@@ -6,15 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - **Infrastructure:**
+  - Installed and configured Matomo via Docker.
+  - Configured Nginx as a reverse proxy for Matomo.
+  - Set up DNS A-records for undevy.com.
+  - Upgraded Droplet to 1GB RAM to support the stack.
   - Provisioned a new Droplet on DigitalOcean (Frankfurt).
 - **Gated Access Logic:**
   - Implemented the core gated access logic on the main page.
-  - The page now checks for a `?code=` parameter in the URL.
-  - Displays a welcome message with personalized content for valid codes.
-  - Displays an "Access Required" message for invalid or missing codes.
-  - Created placeholder components `MainHub` and `AccessGate`.
-  - Added a mock database of valid codes directly in `page.js`.
 - **Project Maintenance:**
-  - Cleaned up default Next.js styles and page content.
-  - Created `CHANGELOG.md` to track project progress.
-  - Created `SECRETS.md` and added it to `.gitignore`.
+  - Created and maintained `SECRETS.md` and `CHANGELOG.md`.
