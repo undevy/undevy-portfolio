@@ -1,11 +1,56 @@
 // src/app/page.js
 'use client';
 
-import { useEffect, useState } from 'react'; 
+// THE FIX PART 1: Import Suspense
+import { useEffect, useState, Suspense } from 'react'; 
 import { useSearchParams } from 'next/navigation';
 import TerminalWindow from './layouts/TerminalWindow';
 import Navigation from './components/Navigation';
 import { useSession } from './context/SessionContext';
+
+// This component uses useSearchParams, so it MUST be rendered inside a Suspense boundary
+function AppContent() {
+  const searchParams = useSearchParams();
+  const { sessionData, setSessionData, addLog } = useSession();
+
+  useEffect(() => {
+    const code = searchParams.get('code');
+    
+    if (!code) {
+      if (sessionData) {
+        addLog(`SYSTEM: Session terminated.`);
+        setSessionData(null);
+      }
+      return;
+    }
+
+    if (sessionData && sessionData.code === code) {
+      return;
+    }
+
+    const validateCode = async () => {
+      try {
+        const response = await fetch(`/api/session?code=${code}`);
+        if (response.ok) {
+          const userData = await response.json();
+          const newSessionData = { ...userData, code }; 
+          setSessionData(newSessionData);
+          addLog(`SYSTEM: Access granted. Session initialized for ${userData.company}.`);
+        } else {
+          addLog(`ERROR: Invalid access code provided: ${code}`);
+          setSessionData(null);
+        }
+      } catch (error) {
+        addLog(`ERROR: Failed to connect to session validator. ${error.message}`);
+        setSessionData(null);
+      }
+    };
+
+    validateCode();
+  }, [searchParams, sessionData, setSessionData, addLog]);
+
+  return sessionData ? <MainHub user={sessionData} /> : <AccessGate />;
+}
 
 function AccessGate() {
   return (
@@ -36,53 +81,17 @@ function MainHub({ user }) {
 }
 
 // The main component that fetches data and controls the view
+// The main page component now wraps AppContent in Suspense
 export default function Home() {
-  const searchParams = useSearchParams();
-  const { sessionData, setSessionData, addLog } = useSession();
-  
-  useEffect(() => {
-    const code = searchParams.get('code');
-    
-    if (!code) {
-      // If there is no code, and a session exists, terminate it.
-      if (sessionData) {
-        addLog(`SYSTEM: Session terminated.`);
-        setSessionData(null);
-      }
-      return;
-    }
-
-    // If we already have a session for this code, do nothing.
-    if (sessionData && sessionData.code === code) {
-      return;
-    }
-
-    const validateCode = async () => {
-      try {
-        const response = await fetch(`/api/session?code=${code}`);
-        
-        if (response.ok) {
-          const userData = await response.json();
-          // Add the code to the session data for later checks
-          const newSessionData = { ...userData, code }; 
-          setSessionData(newSessionData);
-          addLog(`SYSTEM: Access granted. Session initialized for ${userData.company}.`);
-        } else {
-          // If code is invalid, clear any existing session
-          addLog(`ERROR: Invalid access code provided: ${code}`);
-          setSessionData(null);
-        }
-      } catch (error) {
-        addLog(`ERROR: Failed to connect to session validator. ${error.message}`);
-        setSessionData(null);
-      }
-    };
-
-    validateCode();
-  }, [searchParams, sessionData, setSessionData, addLog]);
-
-  return sessionData ? <MainHub user={sessionData} /> : <AccessGate />;
+  return (
+    // THE FIX PART 2: Wrap the component that uses client-side hooks in Suspense
+    // The fallback can be null because we show the AccessGate by default.
+    <Suspense fallback={null}>
+      <AppContent />
+    </Suspense>
+  );
 }
+
 
 // Re-pasting unchanged components for completeness
 function AccessGate_FULL() {
