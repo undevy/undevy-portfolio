@@ -1,20 +1,43 @@
 // src/app/context/SessionContext.js
-'use client'; // This is a client-side component because it uses state and context.
+'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 
-// 1. Create the context itself
 const SessionContext = createContext(null);
 
-// 2. Create the Provider component
-// This component will wrap our entire application and "provide" the state.
-export function SessionProvider({ children }) {
-  const [theme, setTheme] = useState('dark'); // Default theme is 'dark'
+// Helper function to format timestamp
+const getTimestamp = () => {
+  return new Date().toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+};
 
-  // This is the "broadcast" signal. We'll add more to it later.
+export function SessionProvider({ children }) {
+  const [theme, setTheme] = useState('dark');
+  // State for the current session data (company, access level, etc.)
+  const [sessionData, setSessionData] = useState(null);
+  // State for the system log entries
+  const [logEntries, setLogEntries] = useState([]);
+
+  // A function to add new entries to the log
+  const addLog = useCallback((message) => {
+    const newEntry = `[${getTimestamp()}] ${message}`;
+    // We keep the last 20 entries to prevent the log from growing indefinitely
+    setLogEntries(prev => [...prev, newEntry].slice(-20));
+  }, []);
+
   const value = {
     theme,
-    toggleTheme: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
+    toggleTheme: () => {
+      addLog(`SYSTEM: Theme changed to ${theme === 'dark' ? 'LIGHT' : 'DARK'}`);
+      setTheme(theme === 'dark' ? 'light' : 'dark');
+    },
+    sessionData,
+    setSessionData, // We'll call this once when the user logs in
+    logEntries,
+    addLog,
   };
 
   return (
@@ -24,9 +47,6 @@ export function SessionProvider({ children }) {
   );
 }
 
-// 3. Create a custom hook for easy access
-// Instead of importing useContext and SessionContext everywhere,
-// we'll just use this simple hook.
 export function useSession() {
   const context = useContext(SessionContext);
   if (!context) {
