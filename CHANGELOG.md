@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Structure:**
+  - Created placeholder pages for `/overview` and `/experience`.
+  - Added a reusable `Navigation` component.
+  - Integrated navigation into the main hub for logged-in users.
+- **Architecture:**
+  - Decoupled content from code by creating a `content.json` file.
+- **CI/CD & SSL:**
+  - Configured a full CI/CD pipeline with GitHub Actions for automated deployments.
+  - Installed and configured an SSL certificate using Let's Encrypt (Certbot).
+- **Analytics:**
+  - Integrated Matomo tracking script into the Next.js application.
+  - Implemented passing the `accessCode` as a Custom Dimension to Matomo.
 - **Deployment:**
   - Deployed the Next.js application to the server.
   - Configured Nginx to serve the main site and Matomo on different subdomains.
