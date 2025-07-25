@@ -4,7 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Refactored
+- Centralized the main page layout (TerminalWindow + SystemLog) into the root `layout.js` to ensure consistency across all pages.
+- Simplified page components by removing redundant layout and `<main>` tags.
+
+### Fixed
+- Resolved issue where the SystemLog component was rendering twice on the main page.
+- Corrected the flexbox layout to prevent the SystemLog from shifting on subpages.
+- Fixed navigation logging to correctly capture "Back" and "Close" actions.
+
+### Changed
+- Updated the main hub title to `$undevy_portfolio`.
+
+### Changed
+- Refactored `TerminalWindow` to use `useRouter` and `usePathname` for navigation logic.
+
 ### Added
+- Implemented responsive behavior for the main window layout (`max-width`).
+- Added dynamic "Back" and "Close" navigation controls to the `TerminalWindow` header.
 - Implemented a dynamic theme switcher (dark/light) using React Context.
 - Created a `ThemeManager` component to dynamically update global body styles.
 - Made the `TerminalWindow` layout fully theme-aware.
