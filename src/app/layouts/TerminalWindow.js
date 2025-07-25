@@ -1,15 +1,43 @@
 // src/app/layouts/TerminalWindow.js
+'use client'; // This component now needs to be a client component for hooks and interaction.
+
+import { useSession } from '../context/SessionContext';
+
 export default function TerminalWindow({ title, children }) {
+  // Listen to our "radio station" to get the current theme and the toggle function
+  const { theme, toggleTheme } = useSession();
+
+  // Dynamically set classes based on the current theme
+  const windowClasses = `w-full max-w-4xl border rounded ${
+    theme === 'dark' ? 'border-dark-border bg-dark-bg/50' : 'border-light-border bg-light-bg/50'
+  }`;
+  
+  const headerClasses = `flex items-center justify-between p-2 border-b ${
+    theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+  }`;
+  
+  const titleClasses = `font-bold text-lg ${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  
+  const iconClasses = `text-xl cursor-pointer ${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+
   return (
-    <div className="w-full max-w-4xl border border-dark-border rounded bg-dark-bg/50">
+    <div className={windowClasses}>
       {/* Header */}
-      <div className="flex items-center justify-between p-2 border-b border-dark-border">
-        <h1 className="text-dark-text-command font-bold text-lg">${title}</h1>
+      <div className={headerClasses}>
+        <h1 className={titleClasses}>${title}</h1>
         <div className="flex items-center gap-3">
-          {/* Theme switcher will go here */}
-          <span className="text-dark-text-command text-xl">☼</span> 
-          {/* Close button will go here */}
-          <span className="text-dark-text-command text-xl">×</span>
+          {/* THEME SWITCHER BUTTON */}
+          <button onClick={toggleTheme} aria-label="Toggle theme" className={iconClasses}>
+            ☼
+          </button>
+          
+          <span className={iconClasses}>
+            ×
+          </span>
         </div>
       </div>
 

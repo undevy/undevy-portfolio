@@ -5,29 +5,47 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- **Structure:**
-  - Created placeholder pages for `/overview` and `/experience`.
-  - Added a reusable `Navigation` component.
-  - Integrated navigation into the main hub for logged-in users.
-- **Architecture:**
-  - Decoupled content from code by creating a `content.json` file.
-- **CI/CD & SSL:**
-  - Configured a full CI/CD pipeline with GitHub Actions for automated deployments.
-  - Installed and configured an SSL certificate using Let's Encrypt (Certbot).
-- **Analytics:**
-  - Integrated Matomo tracking script into the Next.js application.
-  - Implemented passing the `accessCode` as a Custom Dimension to Matomo.
-- **Deployment:**
-  - Deployed the Next.js application to the server.
-  - Configured Nginx to serve the main site and Matomo on different subdomains.
-  - Installed and configured PM2 to manage the application process.
-- **Infrastructure:**
-  - Installed and configured Matomo via Docker.
-  - Configured Nginx as a reverse proxy for Matomo.
-  - Set up DNS A-records for undevy.com.
-  - Upgraded Droplet to 1GB RAM to support the stack.
-  - Provisioned a new Droplet on DigitalOcean (Frankfurt).
-- **Gated Access Logic:**
-  - Implemented the core gated access logic on the main page.
-- **Project Maintenance:**
-  - Created and maintained `SECRETS.md` and `CHANGELOG.md`.
+- Implemented a dynamic theme switcher (dark/light) using React Context.
+- Created a `ThemeManager` component to dynamically update global body styles.
+- Made the `TerminalWindow` layout fully theme-aware.
+- Applied the `TerminalWindow` layout to all existing pages for a consistent UI.
+- Created a reusable `TerminalWindow` layout component and applied it globally.
+- Implemented a global `SessionContext` to manage shared state like themes.
+- Implemented the full Terminal UI design system (colors, typography) in Tailwind CSS.
+- Enhanced the `content.json` data model with richer information for personalization.
+
+---
+
+## [Iteration 3]
+### CI/CD, SSL, and Architecture
+
+### Added
+- Configured a full CI/CD pipeline with GitHub Actions for automated deployments on push to `main`.
+- Installed and configured an SSL certificate using Let's Encrypt and Certbot for all domains.
+- Decoupled content from code by creating a server-side `content.json` file, read by Next.js via `fs`.
+- Upgraded DigitalOcean Droplet to 1GB RAM to support the full stack.
+
+---
+
+## [Iteration 2]
+### Infrastructure, Deployment, and Analytics
+
+### Added
+- Provisioned and secured a DigitalOcean Droplet running Ubuntu 22.04.
+- Installed and configured Nginx as a reverse proxy.
+- Deployed a self-hosted Matomo analytics instance using Docker and Docker Compose.
+- Deployed the Next.js application to the server using PM2 as a process manager.
+- Integrated the Matomo tracking script into the application, passing the access code as a Custom Dimension.
+- Set up DNS A-records to point `undevy.com` and subdomains to the server.
+
+---
+
+## [Iteration 1]
+### Project Scaffolding and Core Logic
+
+### Added
+- Initialized the Next.js & Tailwind CSS project.
+- Implemented the core gated access logic on the main page, validating a `?code=` URL parameter.
+- Created placeholder components for the access gate and main hub.
+- Set up the project repository on GitHub.
+- Created initial project documentation (`README.md`, `CHANGELOG.md`, `SECRETS.md`).
