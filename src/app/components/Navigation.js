@@ -2,13 +2,15 @@
 import Link from 'next/link';
 
 export default function Navigation() {
+  const buttonClasses = "p-2 w-full text-left border border-dark-border hover:bg-dark-hover transition-colors rounded";
+
   return (
-    <nav className="mt-8 flex gap-4">
-      <Link href="/overview" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors">
-        About Me
+    <nav className="mt-8 flex flex-col gap-3 w-full max-w-md">
+      <Link href="/overview" className={buttonClasses}>
+        <span className="text-dark-text-command">[USR]</span> about_me {">"}
       </Link>
-      <Link href="/experience" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md transition-colors">
-        Experience
+      <Link href="/experience" className={buttonClasses}>
+        <span className="text-dark-text-command">[EXP]</span> experience {">"}
       </Link>
     </nav>
   );

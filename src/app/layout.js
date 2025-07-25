@@ -1,10 +1,15 @@
 // src/app/layout.js
-import { Inter } from "next/font/google";
+import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
-import MatomoTracker from "./components/MatomoTracker"; // Импортируем наш компонент
-import { Suspense } from 'react'; // Импортируем Suspense
+import MatomoTracker from "./components/MatomoTracker";
+import { Suspense } from 'react';
+import { SessionProvider } from "./context/SessionContext"; // Import our new provider
 
-const inter = Inter({ subsets: ["latin"] });
+const robotoMono = Roboto_Mono({ 
+  subsets: ["latin"],
+  display: 'swap',
+  variable: '--font-roboto-mono',
+});
 
 export const metadata = {
   title: "Undevy Portfolio",
@@ -14,15 +19,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${robotoMono.variable} font-mono bg-dark-bg text-dark-text-primary`}>
         {/*
-          Suspense is needed because MatomoTracker uses useSearchParams,
-          which is a Client Component hook.
+          Now, our entire application is wrapped in the SessionProvider.
+          Every component inside can access the shared state (like the current theme).
         */}
-        <Suspense fallback={null}>
-          <MatomoTracker />
-        </Suspense>
-        {children}
+        <SessionProvider>
+          <Suspense fallback={null}>
+            <MatomoTracker />
+          </Suspense>
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );
