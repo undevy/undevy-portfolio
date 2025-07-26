@@ -14,58 +14,42 @@ This project is an interactive portfolio experience designed to look and feel li
 
 | Technology | Purpose | Implementation Details |
 | :--- | :--- | :--- |
-| Next.js | Frontend Framework | Leverages Server-Side Rendering (SSR) to read from `content.json` on the server and generate personalized pages on-demand. Uses React Context for global state management (theme, session data). |
-| Tailwind CSS | CSS Framework | Implements a custom, project-specific design system defined in `tailwind.config.js`, including a full color palette for dark/light themes, typography scales, and component styles. |
+| Next.js | Frontend Framework | Leverages a file-system based router, API Routes for data fetching, and Server-Side Rendering (SSR). Uses React Context for global state management. |
+| Tailwind CSS | CSS Framework | Implements a custom, project-specific design system defined in `tailwind.config.js`, including a full color palette for dark/light themes and typography scales. |
 | Matomo | Web Analytics | Runs in a Docker container, served on a dedicated subdomain (`analytics.undevy.com`). Tracks user sessions with a `accessCode` Custom Dimension. |
 | DigitalOcean | Cloud Hosting | A 1GB RAM Droplet running Ubuntu 22.04, hosting the Next.js app and Dockerized services. |
-| Nginx | Web Server | Acts as a reverse proxy, handling SSL termination (via Certbot) and routing traffic to the Next.js app (`undevy.com`) and the Matomo service (`analytics.undevy.com`). |
+| Nginx | Web Server | Acts as a reverse proxy, handling SSL termination (via Certbot) and routing traffic to the Next.js app (`undevy.com`) and the Matomo service. |
 | PM2 | Process Manager | Keeps the Next.js application running continuously on the server and handles restarts gracefully. |
-| Docker | Containerization | Isolates the Matomo and its database (MariaDB) for clean, manageable, and reproducible deployment. |
+| Docker | Containerization | Isolates the Matomo and its database for clean, manageable, and reproducible deployment. |
 | GitHub Actions | CI/CD Pipeline | Automates the entire deployment process: installs dependencies, builds the project, and securely copies files to the server, then restarts the application via PM2. |
-
-## System Architecture
-
-### Deployment & Data Flow
-
-```
-[ User (`?code=...`) ] -> [ HTTPS ] -> [ DigitalOcean Droplet ]
-                                               |
-[ GitHub Push ] -> [ GitHub Actions ]          |--> [ Nginx (SSL) ]
-        |                  |                       |
-        |              [ Build & Deploy ]          |--> route: undevy.com --> [ PM2 ] -> [ Next.js App ] --(reads)--> [ /home/undevy/content.json ]
-        |                      |                   |
-        V----------------------|-------------------> route: analytics.undevy.com -> [ Docker ] -> [ Matomo Service ]
-[ Code Repository ]
-```
 
 ## Project Status & Roadmap
 
-The project is structured in iterative phases.
+The project is structured in iterative phases. The content plan is based on a detailed prototype.
 
-   Phase 1: Scaffolding & Gated Access [COMPLETED]
-       [x] Initialized project and set up repository.
-       [x] Implemented core gated access logic based on URL code.
+   Phase 1-3: Foundation & Infrastructure [COMPLETED]
+       [x] Set up project, infrastructure, deployment, CI/CD, and analytics.
+       [x] Implemented core gated access logic and decoupled content via an API route.
+       [x] Built the foundational UI (`TerminalWindow`, themes, global state via Context).
 
-   Phase 2: Infrastructure & Deployment [COMPLETED]
-       [x] Provisioned and secured a DigitalOcean server.
-       [x] Deployed Matomo analytics using Docker.
-       [x] Deployed the Next.js application using PM2.
-       [x] Configured Nginx as a reverse proxy with SSL.
-       [x] Set up a full CI/CD pipeline with GitHub Actions.
-       [x] Decoupled content from code using a server-side `content.json` file.
-
-   Phase 3: UI Foundation & State Management [IN PROGRESS]
-       [x] Implemented a comprehensive design system in Tailwind CSS.
-       [x] Created a reusable `TerminalWindow` layout component.
-       [x] Set up a global `SessionContext` for state management.
-       [ ] Implement theme switching (dark/light).
-       [ ] Pass session data from the server to the global context.
-       [ ] Implement the `$system_log` component.
-
-   Phase 4: Content & Feature Implementation [NEXT]
-       [ ] Build out all portfolio sections (`/overview`, `/experience`, `/cases`, etc.).
-       [ ] Implement the interactive elements as per the design mockups.
-       [ ] Populate with final content.
+   Phase 4: Content & Feature Implementation [IN PROGRESS]
+       [ ] Home Hub: Finalize the main navigation hub.
+       [ ] `/overview` Section:
+           [ ] Build `Introduction` screen with dynamic content.
+           [ ] Build `CurrentStatus` screen.
+           [ ] Build `ValueProp` screen.
+       [ ] `/experience` Section:
+           [ ] Build interactive `Timeline` screen.
+           [ ] Build `RoleDetail` screen with accordion component.
+           [ ] Build `Metrics` screen.
+       [ ] `/cases` Section:
+           [ ] Build dynamic `CaseList` screen based on config.
+           [ ] Build `CaseOverview`, `CaseChallenge`, `CaseSolution`, `CaseResults` screens.
+       [ ] `/skills` Section:
+           [ ] Build `SkillsGrid` screen.
+           [ ] Build `SkillDetail` screen.
+       [ ] `/contact` Section:
+           [ ] Build `NextSteps` call-to-action screen.
 
    Phase 5: Content Management [FUTURE]
        [ ] Develop a headless CMS (e.g., via a Telegram bot) to manage `content.json`.
