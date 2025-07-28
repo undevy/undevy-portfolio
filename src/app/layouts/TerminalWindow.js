@@ -2,15 +2,19 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import { useRouter, usePathname } from 'next/navigation';
-import AnalyticsPanel from '../components/AnalyticsPanel'; // Import the new panel
 
 export default function TerminalWindow({ title, children }) {
-  const { theme, toggleTheme, addLog } = useSession(); // Get addLog
-  const router = useRouter();
-  const pathname = usePathname();
+  const { 
+    theme, 
+    toggleTheme, 
+    goBack, 
+    endSession, 
+    currentScreen,
+    navigationHistory 
+  } = useSession();
 
-  const showBackButton = pathname !== '/';
+  // Show back button if we have navigation history AND we're not on Entry screen
+  const showBackButton = navigationHistory.length > 0 && currentScreen !== 'Entry';
 
   const windowClasses = `w-full max-w-2xl border rounded ${
     theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
@@ -28,35 +32,41 @@ export default function TerminalWindow({ title, children }) {
     theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
   }`;
   
-  const backButtonClasses = `text-2xl font-bold mr-3 ${
+  const backButtonClasses = `text-2xl font-bold mr-3 cursor-pointer ${
     theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
   }`;
 
   const handleClose = () => {
-    addLog(`NAVIGATION: Session closed from ${pathname}`);
-    router.push('/');
+    if (currentScreen === 'Entry') {
+      // If we're on Entry screen, do nothing
+      return;
+    }
+    endSession();
   };
-
-  const handleBack = () => {
-    // THE LOGGING FIX IS HERE
-    addLog(`NAVIGATION: Back from ${pathname}`);
-    router.back();
-  }
 
   return (
     <div className={windowClasses}>
       <div className={headerClasses}>
         <div className="flex items-center">
-          {showBackButton && <button onClick={handleBack} aria-label="Go back" className={backButtonClasses}>←</button>}
+          {showBackButton && (
+            <button onClick={goBack} aria-label="Go back" className={backButtonClasses}>
+              ←
+            </button>
+          )}
           <h1 className={titleClasses}>${title}</h1>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={toggleTheme} aria-label="Toggle theme" className={iconClasses}>☼</button>
-          <button onClick={handleClose} aria-label="Close session" className={iconClasses}>×</button>
+          <button onClick={toggleTheme} aria-label="Toggle theme" className={iconClasses}>
+            ☼
+          </button>
+          {currentScreen !== 'Entry' && (
+            <button onClick={handleClose} aria-label="Close session" className={iconClasses}>
+              ×
+            </button>
+          )}
         </div>
       </div>
-      {/* THE FIX: No AnalyticsPanel here anymore. Just the children. */}
-      <div className="p-4">
+      <div>
         {children}
       </div>
     </div>

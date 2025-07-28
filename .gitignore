@@ -42,6 +42,8 @@ next-env.d.ts
 
 # local files
 SECRETS.md
-project-instructions.md
-portfolio-tech-documentation.md
-portfolio-navigation-prototype.tsx
+STRATEGY.md
+ARCHITECTURE.md
+DEPLOYMENT.md
+CONTENT-MODEL.md
+INSTRUCTIONS.md

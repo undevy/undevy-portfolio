@@ -1,120 +1,79 @@
 // src/app/page.js
 'use client';
 
-// THE FIX PART 1: Import Suspense
-import { useEffect, useState, Suspense } from 'react'; 
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import TerminalWindow from './layouts/TerminalWindow';
-import Navigation from './components/Navigation';
 import { useSession } from './context/SessionContext';
+import ScreenRenderer from './components/ScreenRenderer';
 
-// This component uses useSearchParams, so it MUST be rendered inside a Suspense boundary
 function AppContent() {
   const searchParams = useSearchParams();
-  const { sessionData, setSessionData, addLog } = useSession();
-
+  const { sessionData, setSessionData, navigate, addLog, endSession } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
   useEffect(() => {
+    // If already authenticated, just show the app
+    if (sessionData) {
+      setIsLoading(false);
+      setIsAuthenticated(true);
+      return;
+    }
+    
     const code = searchParams.get('code');
     
-    if (!code) {
-      if (sessionData) {
-        addLog(`SYSTEM: Session terminated.`);
-        setSessionData(null);
-      }
-      return;
-    }
-
-    if (sessionData && sessionData.code === code) {
-      return;
-    }
-
-    const validateCode = async () => {
+    const authenticateWithCode = async (accessCode) => {
       try {
-        const response = await fetch(`/api/session?code=${code}`);
+        const response = await fetch(`/api/session?code=${accessCode}`);
         if (response.ok) {
           const userData = await response.json();
-          const newSessionData = { ...userData, code }; 
-          setSessionData(newSessionData);
-          addLog(`SYSTEM: Access granted. Session initialized for ${userData.company}.`);
+          const enrichedData = {
+            ...userData,
+            meta: {
+              ...userData.meta,
+              code: accessCode
+            }
+          };
+          setSessionData(enrichedData);
+          addLog(`ACCESS GRANTED: ${userData.meta?.company || 'Unknown Company'}`);
+          setIsAuthenticated(true);
+          navigate('MainHub', false);
         } else {
-          addLog(`ERROR: Invalid access code provided: ${code}`);
-          setSessionData(null);
+          addLog(`ACCESS DENIED: Invalid code ${accessCode}`);
+          setIsAuthenticated(false);
         }
       } catch (error) {
-        addLog(`ERROR: Failed to connect to session validator. ${error.message}`);
-        setSessionData(null);
+        addLog(`ERROR: Failed to authenticate`);
+        setIsAuthenticated(false);
       }
+      setIsLoading(false);
     };
-
-    validateCode();
-  }, [searchParams, sessionData, setSessionData, addLog]);
-
-  return sessionData ? <MainHub user={sessionData} /> : <AccessGate />;
-}
-
-function AccessGate() {
-  return (
-    <TerminalWindow title="enter_access_code">
-      <div className="text-center">
-        <h1 className="text-5xl font-bold">Access Required</h1>
-        <p className="mt-4 text-dark-text-secondary">
-          Please use the unique URL provided to you.
-        </p>
+    
+    if (code && !isAuthenticated) {
+      // Authenticate only if we have a code and haven't authenticated yet
+      authenticateWithCode(code);
+    } else {
+      // No code in URL - show entry screen
+      setIsLoading(false);
+      setIsAuthenticated(false);
+    }
+  }, [searchParams, sessionData, setSessionData, navigate, addLog, isAuthenticated]);
+  
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-2xl mx-auto text-center p-8">
+        <div className="text-dark-text-primary">AUTHENTICATING...</div>
       </div>
-    </TerminalWindow>
-  );
+    );
+  }
+  
+  return <ScreenRenderer />;
 }
 
-function MainHub({ user }) {
-  return (
-    // THE TITLE FIX IS HERE
-    <TerminalWindow title="undevy_portfolio">
-      <div className="text-center flex flex-col items-center">
-        <h1 className="text-4xl font-bold">Welcome, {user.greeting_name}!</h1>
-        <p className="mt-2 text-dark-text-secondary">
-          Please select a section to continue.
-        </p>
-        <Navigation />
-      </div>
-    </TerminalWindow>
-  );
-}
-
-// The main component that fetches data and controls the view
-// The main page component now wraps AppContent in Suspense
 export default function Home() {
   return (
-    // THE FIX PART 2: Wrap the component that uses client-side hooks in Suspense
-    // The fallback can be null because we show the AccessGate by default.
     <Suspense fallback={null}>
       <AppContent />
     </Suspense>
   );
 }
-
-
-// Re-pasting unchanged components for completeness
-function AccessGate_FULL() {
-  return (
-    <TerminalWindow title="enter_access_code">
-      <div className="text-center">
-        <h1 className="text-5xl font-bold">Access Required</h1>
-        <p className="mt-4 text-dark-text-secondary">Please use the unique URL provided to you.</p>
-      </div>
-    </TerminalWindow>
-  );
-}
-Object.assign(AccessGate, AccessGate_FULL);
-
-function MainHub_FULL({ user }) {
-  return (
-    <TerminalWindow title="undevy_portfolio">
-      <div className="text-center flex flex-col items-center">
-        <h1 className="text-4xl font-bold">Welcome, {user.greeting_name}!</h1>
-        <p className="mt-2 text-dark-text-secondary">Please select a section to continue.</p>
-        <Navigation />
-      </div>
-    </TerminalWindow>
-  );
-}
-Object.assign(MainHub, MainHub_FULL);
