@@ -172,22 +172,24 @@ export function SessionProvider({ children }) {
   
   // ========== SESSION FUNCTIONS ==========
   const endSession = useCallback(() => {
-    addLog('SESSION TERMINATED');
-    setSessionData(null);
-    setNavigationHistory([]);
-    setCurrentScreen('Entry');
-    setSelectedCase(null);
-    setSelectedRole(null);
-    setSelectedSkill(null);
-    setExpandedSections({});
-    setActiveTab({});
-    setScreensVisitedCount(1);
-    if (typeof window !== 'undefined') {
-      const currentUrl = new URL(window.location.href);
-      currentUrl.hash = '';
-      window.history.replaceState({}, '', currentUrl.toString());
-    }
-  }, [addLog]);
+  addLog('SESSION TERMINATED');
+  setSessionData(null);
+  setNavigationHistory([]);
+  setCurrentScreen('Entry');
+  setSelectedCase(null);
+  setSelectedRole(null);
+  setSelectedSkill(null);
+  setExpandedSections({});
+  setActiveTab({});
+  setScreensVisitedCount(1);
+  if (typeof window !== 'undefined') {
+    // Полностью очищаем URL от code и hash
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete('code'); // Удаляем параметр code
+    currentUrl.hash = ''; // Удаляем hash
+    window.history.replaceState({}, '', currentUrl.toString());
+  }
+}, [addLog]);
   
   // ========== INITIALIZATION ==========
   useEffect(() => {
