@@ -10,6 +10,7 @@ This project is an interactive portfolio experience designed to look and feel li
 - Decoupled Content: All personalized data is stored in a `content.json` file on the server, completely separate from the application code. The API intelligently merges user profiles with global data.
 - Privacy-First Analytics: Using a self-hosted Matomo instance, we track user interactions for each session. The access code is passed as a Custom Dimension, providing granular insights while maintaining full data ownership.
 - Automated CI/CD: A GitHub Actions workflow automatically builds, tests, and deploys the application to the production server on every push to the `main` branch.
+- Headless CMS via Telegram Bot: Edit portfolio content directly from Telegram without SSH access. Features include content viewing, editing, version history, and automatic backups.
 
 ## Live Demo
 
@@ -28,6 +29,7 @@ This project is an interactive portfolio experience designed to look and feel li
 | Nginx          | Web Server / Reverse Proxy     | Manages incoming traffic, handles SSL termination with Certbot (Let's Encrypt), and routes requests to the Next.js app and Matomo service. |
 | PM2            | Process Manager                | A production-grade process manager that keeps the Next.js application alive and handles graceful restarts during deployments. |
 | Docker         | Containerization               | Isolates the Matomo stack (Matomo + MariaDB), ensuring a clean and reproducible service environment. |
+| grammY         | Telegram Bot Framework | Modern, secure library for building the content management bot interface. |
 | GitHub Actions | CI/CD Automation               | Automates the entire deployment process from push to production, including building, secure file transfer (SCP), and restarting the app via SSH. |
 
 ## System Architecture
@@ -47,15 +49,22 @@ src/
 │   ├── screens/          # All screen components
 │   │   ├── Entry.js      # Authentication screen
 │   │   ├── MainHub.js    # Main navigation menu
-│   │   └── ...           # Other screens
+│   │   ├── Introduction.js # About section
+│   │   ├── Timeline.js   # Experience timeline
+│   │   ├── RoleDetail.js # Detailed role information
+│   │   ├── CaseList.js   # Filtered case studies
+│   │   ├── CaseDetail.js # Case study details
+│   │   ├── SkillsGrid.js # Skills matrix
+│   │   ├── SkillDetail.js # Skill details
+│   │   ├── SideProjects.js # Personal projects
+│   │   └── Contact.js    # Contact information
 │   ├── components/       
-│   │   ├── ScreenRenderer.js  # Dynamic screen router
-│   │   ├── AnalyticsPanel.js  # Session analytics & breadcrumbs
-│   │   └── SystemLog.js       # Real-time activity log
-│   ├── context/
-│   │   └── SessionContext.js  # Global state management
-│   └── api/
-│       └── session/route.js   # Data fetching & merging
+│   │   ├── ui/          # Reusable UI components
+│   │   │   ├── Accordion.js # Expandable sections
+│   │   │   └── Tabs.js      # Tabbed content
+│   │   ├── ScreenRenderer.js # Dynamic screen router
+│   │   ├── AnalyticsPanel.js # Session analytics
+│   │   └── SystemLog.js      # Real-time activity log
 ```
 
 ### Deployment Architecture
@@ -88,25 +97,60 @@ The project is developed in iterative phases. The content plan is based on a det
     - [x] Added hash-based routing with state preservation
     - [x] Implemented breadcrumb navigation
 
-- Phase 5: Content Implementation `[IN PROGRESS]`
-    - [ ] `/experience` Section:
-        - [ ] Build interactive `Timeline` screen
-        - [ ] Build `RoleDetail` screen with accordion component
-    - [ ] `/cases` Section:
-        - [ ] Build dynamic `CaseList` screen based on config
-        - [ ] Build `CaseDetail` screen with tabbed navigation
-    - [ ] `/skills` Section:
-        - [ ] Build `SkillsGrid` and `SkillDetail` screens
-    - [ ] `/side_projects` and `/contact` sections
+- Phase 5: Content Implementation `[COMPLETED]`
+    - [x] `/experience` Section:
+        - [x] Build interactive `Timeline` screen
+        - [x] Build `RoleDetail` screen with accordion component
+    - [x] `/cases` Section:
+        - [x] Build dynamic `CaseList` screen based on config
+        - [x] Build `CaseDetail` screen with tabbed navigation
+    - [x] `/skills` Section:
+        - [x] Build `SkillsGrid` and `SkillDetail` screens
+    - [x] `/side_projects` and `/contact` sections
 
-- Phase 6: Polish & Optimization `[FUTURE]`
+- Phase 6: Headless CMS Development `[IN PROGRESS]`
+    - [x] Create secure Admin API with validation
+    - [x] Build Telegram bot for content management
+    - [x] Implement backup system
+    - [ ] Add content editing capabilities
+
+- Phase 7: Polish & Optimization `[FUTURE]`
     - [ ] Add screen transition animations
     - [ ] Implement lazy loading for screen components
     - [ ] Add keyboard navigation support
     - [ ] Mobile responsive design improvements
 
-- Phase 7: Content Management `[FUTURE]`
-    - [ ] Develop a headless CMS (e.g., via a Telegram bot) to manage `content.json`
+## Content Management
+
+The portfolio includes a Telegram-based CMS for easy content updates without technical knowledge.
+
+### Setting Up the CMS Bot
+
+1. Create a bot via @BotFather on Telegram
+2. Configure the bot environment:
+   ```bash
+   cd telegram-bot
+   cp .env.example .env
+   # Edit .env with your bot token and settings
+   ```
+3. Start the bot:
+   ```bash
+   npm install
+   npm start
+   ```
+
+#### Available Commands
+
+- /start - Initialize bot and see available commands
+- /status - Check system status and content statistics
+- /get - Download current content.json
+- /test - Interactive menu with action buttons
+
+#### Security
+
+- Bot access restricted by Telegram User ID
+- API protected by Bearer token authentication
+- All changes create automatic backups
 
 ## Local Development
 

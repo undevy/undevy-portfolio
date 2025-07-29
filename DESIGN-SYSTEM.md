@@ -105,3 +105,31 @@ A consistent spacing system ensures a clean, grid-like structure.
 -   Transitions: State changes should be immediate with no CSS animations or transitions, aside from a subtle `transition-colors` on hover states.
 -   Focus States: Minimal visual change. No outlines or focus rings. Interactive elements like inputs may have a subtle background color change on focus.
 -   Loading States: Asynchronous operations should display text changes (e.g., "AUTHENTICATING...") rather than spinners or skeletons to maintain the terminal aesthetic.
+
+### 5.5. Accordion Component
+
+Used for expandable content sections with consistent styling:
+
+- Structure: Header button with chevron indicator + collapsible content area
+- States:
+  - Collapsed: Shows only header with down chevron
+  - Expanded: Shows header with up chevron and content below
+- Styling: 
+  - 1px border around each section
+  - Hover state on header button
+  - Smooth chevron rotation
+  - Border between header and content when expanded
+
+### 5.6. Tabs Component
+
+Used for organizing content into switchable views:
+
+- Structure: Horizontal tab headers + content area below
+- States:
+  - Active tab: Solid background (`bg-dark-active` or `bg-light-active`)
+  - Inactive tabs: Transparent with hover state
+- Styling:
+  - Tabs share bottom border with content area
+  - Active tab appears "connected" to content
+  - Equal width tabs using flexbox
+  - Text prefixed with `$` for terminal aesthetic
