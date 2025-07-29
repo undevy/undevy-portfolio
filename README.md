@@ -124,10 +124,6 @@ npm run dev
 
 Access the local version at `http://localhost:3000/?code=LOCAL_TEST`
 
-## Known Issues
-
-- Close button (×) doesn't properly logout - the code remains in URL causing re-authentication
-
 ## Documentation
 
 - [`/docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) - System architecture and data flow

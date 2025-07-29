@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Close button (×) now properly clears session - removes code parameter from URL to prevent re-authentication loop
+
 ### Known Issues
-- Close button (×) doesn't properly logout - it redirects but the code remains in URL causing re-authentication
+- None currently identified
 
 ---
 
