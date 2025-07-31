@@ -8,7 +8,9 @@ const ADMIN_TOKEN = 'your-super-secret-token-2024';
 
 const CONTENT_FILE_PATH = process.env.NODE_ENV === 'production' 
   ? '/home/undevy/content.json'
-  : path.join(process.cwd(), 'src/app/test-content.json');
+  : process.env.USE_LOCAL_TEST_CONTENT 
+    ? path.join(process.cwd(), 'test-content-local.json')
+    : path.join(process.cwd(), 'src/app/test-content.json');
 
 const BACKUP_DIR = process.env.NODE_ENV === 'production'
   ? '/home/undevy/content-backups'

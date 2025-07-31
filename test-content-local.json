@@ -1,0 +1,488 @@
+{
+  "DEFI123": {
+    "meta": {
+      "company": "Quantum Financial",
+      "timeline": "scenario_b",
+      "depth": "detailed",
+      "emphasis": [
+        "algorithmic_trading",
+        "risk_modeling"
+      ],
+      "tone": "technical",
+      "cases": [
+        "project_cygnus",
+        "project_phoenix"
+      ]
+    }
+  },
+  "WEB3456": {
+    "meta": {
+      "company": "Nebula Labs",
+      "timeline": "scenario_a",
+      "depth": "quick",
+      "emphasis": [
+        "rapid_prototyping",
+        "user_growth"
+      ],
+      "tone": "casual",
+      "cases": [
+        "project_orion",
+        "project_pegasus"
+      ]
+    }
+  },
+  "CORP789": {
+    "meta": {
+      "company": "Apex Industries",
+      "timeline": "scenario_a",
+      "depth": "standard",
+      "emphasis": [
+        "enterprise_scale",
+        "process_optimization"
+      ],
+      "tone": "formal",
+      "cases": [
+        "project_titan",
+        "project_vega"
+      ]
+    }
+  },
+  "LOCAL_TEST": {
+    "meta": {
+      "company": "Sandbox Environment",
+      "timeline": "scenario_a",
+      "depth": "standard",
+      "tone": "casual",
+      "cases": [
+        "project_cygnus",
+        "project_orion"
+      ]
+    },
+    "profile": {
+      "greeting_name": "Test User",
+      "summary": {
+        "title": "Product Designer",
+        "specialization": "Web3/DeFi Specialist",
+        "background": "Engineering Background"
+      },
+      "attributes": [
+        "Web3/DeFi UX Expert",
+        "Design Systems Architect",
+        "Data-Driven Designer",
+        "Technical Background"
+      ],
+      "status": {
+        "seeking": "Remote Product Designer",
+        "location": "Tbilisi, Georgia (GMT+4)",
+        "availability": "Busy until January 2025"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer specializing in DeFi/Web3 with deep technical background. Engineering graduate (MIET) who transitioned into design, bringing unique perspective on bridging technical complexity with user needs. Focused on creating scalable design systems and data-driven solutions for complex financial products.",
+      "casual": "Hey! I'm a product designer who's been making crypto actually usable for the past 4+ years. Started as an engineer, found my passion in design, and never looked back! I love turning complex DeFi protocols into interfaces that even your mom could use.",
+      "formal": "Senior Product Designer with 9 years of experience transforming complex digital products into intuitive experiences. Specialized in Web3/DeFi with a unique technical foundation. Proven track record of leading design initiatives that drive significant business metrics."
+    }
+  },
+  "GLOBAL_DATA": {
+    "profile": {
+      "name": "Jane Doe",
+      "title": "Principal Engineer",
+      "specialization": "Distributed Systems",
+      "email": "jane.doe@example.com",
+      "website": "https://example.com",
+      "location": "Global / Remote"
+    },
+    "introduction": {
+      "technical": "Leveraging advanced algorithms and distributed computing paradigms to solve large-scale data processing challenges.",
+      "casual": "I build cool stuff that works at scale. Let's connect and make something amazing.",
+      "formal": "Experienced Principal Engineer with a demonstrated history of working in the computer software industry."
+    },
+    "attributes": [
+      "Distributed Systems",
+      "Cloud Architecture",
+      "Data-Intensive Applications",
+      "Technical Leadership"
+    ],
+    "status": {
+      "seeking": "Principal Engineering Roles",
+      "location": "Remote First",
+      "availability": "Open to offers",
+      "target_comp": "$200,000+",
+      "work_type": "Full-Time"
+    },
+    "menu": [
+      {
+        "label": "overview",
+        "screen": "Introduction",
+        "icon": "[INF]",
+        "desc": "Who I am and what I do"
+      },
+      {
+        "label": "work_history",
+        "screen": "Timeline",
+        "icon": "[HIS]",
+        "desc": "My professional journey"
+      },
+      {
+        "label": "portfolio",
+        "screen": "CaseList",
+        "icon": "[FOL]",
+        "desc": "Selected projects"
+      },
+      {
+        "label": "competencies",
+        "screen": "SkillsGrid",
+        "icon": "[CMP]",
+        "desc": "My technical skills"
+      },
+      {
+        "label": "innovations",
+        "screen": "SideProjects",
+        "icon": "[INV]",
+        "desc": "Personal explorations"
+      },
+      {
+        "label": "connect",
+        "screen": "Contact",
+        "icon": "[CON]",
+        "desc": "Let's get in touch"
+      }
+    ],
+    "experience": {
+      "scenario_a": [
+        {
+          "id": "acme",
+          "company": "Acme Corp",
+          "role": "Senior Engineer",
+          "period": "2022 - 2024",
+          "duration": "2 years",
+          "highlight": "Led the 'Hydra' data pipeline project."
+        },
+        {
+          "id": "globex",
+          "company": "Globex Corporation",
+          "role": "Software Engineer",
+          "period": "2020 - 2022",
+          "duration": "2 years",
+          "highlight": "Developed the core 'Omega' algorithm."
+        },
+        {
+          "id": "stark",
+          "company": "Stark Industries",
+          "role": "Junior Developer",
+          "period": "2018 - 2020",
+          "duration": "2 years",
+          "highlight": "Worked on the initial 'Mark I' prototype."
+        }
+      ],
+      "scenario_b": [
+        {
+          "id": "acme_globex",
+          "company": "Acme & Globex",
+          "role": "Lead Data Architect",
+          "period": "2020 - 2024",
+          "duration": "4 years",
+          "highlight": "Oversaw the merger of two major data platforms."
+        },
+        {
+          "id": "stark",
+          "company": "Stark Industries",
+          "role": "Junior Developer",
+          "period": "2018 - 2020",
+          "duration": "2 years",
+          "highlight": "Initial prototype development."
+        }
+      ]
+    },
+    "role_details": {
+      "acme": {
+        "summary": "Led the Hydra data pipeline project, processing 10TB+ daily with 99.9% uptime. Built scalable microservices architecture handling millions of requests.",
+        "responsibilities": [
+          "Architected and implemented distributed data processing pipeline",
+          "Led team of 5 engineers in agile environment",
+          "Optimized system performance reducing latency by 60%",
+          "Established monitoring and alerting infrastructure",
+          "Conducted code reviews and mentored junior developers"
+        ],
+        "achievements": [
+          "Reduced data processing time from 6 hours to 45 minutes",
+          "Achieved 99.9% uptime for critical services",
+          "Implemented cost optimizations saving K/month",
+          "Built reusable component library used across 3 teams"
+        ],
+        "tech": [
+          "Go",
+          "Kafka",
+          "Kubernetes",
+          "PostgreSQL",
+          "Redis",
+          "Prometheus"
+        ]
+      },
+      "globex": {
+        "summary": "Developed the core Omega algorithm for real-time recommendation engine. Worked on machine learning models processing user behavior data.",
+        "responsibilities": [
+          "Designed and implemented ML models for recommendations",
+          "Built RESTful APIs for model serving",
+          "Collaborated with data scientists on feature engineering",
+          "Maintained and optimized Python codebase"
+        ],
+        "achievements": [
+          "Increased recommendation accuracy by 35%",
+          "Reduced API response time to under 100ms",
+          "Processed 1M+ recommendations daily",
+          "Open-sourced internal ML utilities library"
+        ],
+        "tech": [
+          "Python",
+          "TensorFlow",
+          "Apache Spark",
+          "AWS",
+          "Docker",
+          "FastAPI"
+        ]
+      },
+      "stark": {
+        "summary": "Junior role focused on frontend development and initial prototype creation. Learned industry best practices and modern development workflows.",
+        "responsibilities": [
+          "Developed responsive UI components",
+          "Participated in daily standups and sprint planning",
+          "Fixed bugs and implemented feature requests",
+          "Wrote unit and integration tests"
+        ],
+        "achievements": [
+          "Completed intern project 2 weeks ahead of schedule",
+          "Improved test coverage from 45% to 80%",
+          "Received mentorship award for helping new hires",
+          "Contributed to company tech blog"
+        ],
+        "tech": [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "MongoDB",
+          "Jest",
+          "Git"
+        ]
+      }
+    },
+    "case_studies": {
+      "project_cygnus": {
+        "title": "Project Cygnus",
+        "desc": "A distributed data processing engine.",
+        "metrics": "+50% throughput",
+        "tags": [
+          "Big Data",
+          "Distributed Systems"
+        ]
+      },
+      "project_phoenix": {
+        "title": "Project Phoenix",
+        "desc": "A fault-tolerant microservices architecture.",
+        "metrics": "99.999% uptime",
+        "tags": [
+          "Microservices",
+          "Resilience"
+        ]
+      },
+      "project_orion": {
+        "title": "Project Orion",
+        "desc": "A real-time analytics dashboard.",
+        "metrics": "<50ms latency",
+        "tags": [
+          "Real-Time",
+          "Data Viz"
+        ]
+      },
+      "project_pegasus": {
+        "title": "Project Pegasus",
+        "desc": "A machine learning model deployment platform.",
+        "metrics": "-80% deployment time",
+        "tags": [
+          "MLOps",
+          "Automation"
+        ]
+      },
+      "project_titan": {
+        "title": "Project Titan",
+        "desc": "An enterprise-grade identity management system.",
+        "metrics": "1M+ users",
+        "tags": [
+          "Security",
+          "IAM"
+        ]
+      },
+      "project_vega": {
+        "title": "Project Vega",
+        "desc": "A scalable e-commerce backend.",
+        "metrics": "10K transactions/sec",
+        "tags": [
+          "E-commerce",
+          "Scalability"
+        ]
+      }
+    },
+    "case_details": {
+      "project_cygnus": {
+        "challenge": "The existing data processing pipeline was struggling with scale, taking 6+ hours to process daily data and frequently failing. The system needed complete re-architecture to handle 10x growth.",
+        "approach": [
+          "Conducted thorough analysis of bottlenecks using profiling tools",
+          "Designed new distributed architecture using event-driven patterns",
+          "Implemented proof of concept with subset of data",
+          "Gradually migrated services with zero downtime",
+          "Set up comprehensive monitoring and alerting"
+        ],
+        "solution": "Built a new Kafka-based streaming pipeline that processes data in real-time. Implemented horizontal scaling with Kubernetes, added circuit breakers for resilience, and created a custom monitoring dashboard.",
+        "results": [
+          "Reduced processing time from 6 hours to 45 minutes",
+          "Achieved 99.99% uptime over 6 months",
+          "Handled 10x data volume increase seamlessly",
+          "Decreased infrastructure costs by 40%"
+        ],
+        "learnings": "The key learning was the importance of incremental migration. By running old and new systems in parallel, we could validate results and roll back if needed. Also, investing in observability early paid huge dividends."
+      },
+      "project_orion": {
+        "challenge": "Users needed real-time visibility into system metrics but existing dashboards were slow, hard to use, and lacked critical features. Support tickets about data visibility were consuming 30% of team time.",
+        "approach": [
+          "Interviewed 20+ users to understand pain points",
+          "Created mockups and prototypes for quick feedback",
+          "Built modular component library for consistency",
+          "Implemented WebSocket connections for real-time updates",
+          "Added advanced filtering and export capabilities"
+        ],
+        "solution": "Developed a React-based dashboard with sub-second data updates. Used D3.js for interactive visualizations, implemented smart caching to reduce API load, and added customizable alerts.",
+        "results": [
+          "Reduced support tickets by 75%",
+          "Achieved <100ms average response time",
+          "Increased daily active users by 200%",
+          "Received 4.8/5 user satisfaction score"
+        ],
+        "learnings": "Real-time doesn't always mean instant - users were happy with 1-second updates vs true real-time. This allowed us to batch updates and significantly reduce server load."
+      }
+    },
+    "skills": [
+      {
+        "name": "Go (Golang)",
+        "id": "golang",
+        "level": "EXPERT",
+        "desc": "Concurrent programming"
+      },
+      {
+        "name": "Kubernetes",
+        "id": "kubernetes",
+        "level": "ADVANCED",
+        "desc": "Container orchestration"
+      },
+      {
+        "name": "Python",
+        "id": "python",
+        "level": "ADVANCED",
+        "desc": "Data science & scripting"
+      },
+      {
+        "name": "React",
+        "id": "react",
+        "level": "INTERMEDIATE",
+        "desc": "User interfaces"
+      },
+      {
+        "name": "AWS",
+        "id": "aws",
+        "level": "EXPERT",
+        "desc": "Cloud services"
+      },
+      {
+        "name": "System Design",
+        "id": "system_design",
+        "level": "EXPERT",
+        "desc": "Architecting scalable systems"
+      }
+    ],
+    "skill_details": {
+      "Go (Golang)": {
+        "description": "Extensive experience in building high-performance, concurrent services.",
+        "examples": [
+          "Example A"
+        ],
+        "tools": [
+          "Go standard library",
+          "gRPC"
+        ],
+        "impact": "Impact A"
+      },
+      "Kubernetes": {
+        "description": "Deep knowledge of orchestrating and managing containerized applications.",
+        "examples": [
+          "Example B"
+        ],
+        "tools": [
+          "Helm",
+          "Prometheus"
+        ],
+        "impact": "Impact B"
+      },
+      "System Design": {
+        "description": "Proficient in designing scalable, resilient, and maintainable systems.",
+        "examples": [
+          "Example C"
+        ],
+        "tools": [
+          "Draw.io",
+          "Excalidraw"
+        ],
+        "impact": "Impact C"
+      }
+    },
+    "side_projects": [
+      {
+        "id": "home_automation",
+        "name": "Home Automation System",
+        "desc": "A custom smart home setup.",
+        "status": "IN_PROGRESS",
+        "tech": [
+          "Raspberry Pi",
+          "Go"
+        ]
+      },
+      {
+        "id": "open_source_lib",
+        "name": "Open Source Library",
+        "desc": "A popular utility library on GitHub.",
+        "status": "COMPLETED",
+        "tech": [
+          "Go",
+          "CI/CD"
+        ]
+      }
+    ],
+    "public_speaking": [
+      {
+        "title": "Talk at Go Conference",
+        "url": "https://example.com/talk1"
+      },
+      {
+        "title": "Podcast on Distributed Systems",
+        "url": "https://example.com/podcast1"
+      }
+    ],
+    "contact": {
+      "email": "foxous@proton.me",
+      "website": "https://foxous.design",
+      "telegram": "@undevy",
+      "location": "Tbilisi, Georgia (GMT+4)",
+      "timezone": "GMT+4",
+      "availability": {
+        "status": "IMMEDIATE",
+        "work_type": "Fully Remote Only",
+        "target_comp": "$8,000+/month",
+        "start_date": "Available Now"
+      },
+      "calendar_link": "https://calendly.com/undevy/30min",
+      "social_links": {
+        "twitter": "https://twitter.com/undevy",
+        "linkedin": "https://linkedin.com/in/undevy",
+        "github": "https://github.com/undevy"
+      }
+    }
+  }
+}

@@ -108,11 +108,14 @@ The project is developed in iterative phases. The content plan is based on a det
         - [x] Build `SkillsGrid` and `SkillDetail` screens
     - [x] `/side_projects` and `/contact` sections
 
-- Phase 6: Headless CMS Development `[IN PROGRESS]`
+- Phase 6: Headless CMS Development `[COMPLETED]`
     - [x] Create secure Admin API with validation
     - [x] Build Telegram bot for content management
     - [x] Implement backup system
-    - [ ] Add content editing capabilities
+    - [x] Add content editing capabilities
+    - [x] Interactive case study creation wizard
+    - [x] Case study editing with field preservation
+    - [x] Safe deletion with preview and warnings
 
 - Phase 7: Polish & Optimization `[FUTURE]`
     - [ ] Add screen transition animations
@@ -141,16 +144,48 @@ The portfolio includes a Telegram-based CMS for easy content updates without tec
 
 #### Available Commands
 
-- /start - Initialize bot and see available commands
-- /status - Check system status and content statistics
-- /get - Download current content.json
-- /test - Interactive menu with action buttons
+**Basic Operations:**
+- `/start` - Initialize bot and see available commands
+- `/status` - Check system status and content statistics
+- `/get` - Download current content.json
+- `/history` - View last 10 content versions
+- `/rollback N` - Restore content to version N
+
+**Case Study Management:**
+- `/list_cases` - View all available case studies
+- `/preview [case_id]` - View detailed case study information
+- `/add_case` - Create new case study (interactive 10-step wizard)
+- `/edit_case [case_id]` - Edit existing case study
+- `/delete_case [case_id]` - Delete case study with preview confirmation
+
+**Helper Commands:**
+- `/cancel` - Cancel any active conversation
+- `/skip` - Skip optional fields during case creation
+- `/keep` - Keep existing value during case editing
+
+#### Interactive Workflows
+
+The bot uses a conversational interface for complex operations:
+
+**Creating a Case Study:**
+1. Bot guides through 10 fields (ID, title, description, metrics, tags, challenge, approach, solution, results, learnings)
+2. Multi-line input support for arrays (approach steps, results)
+3. Use `/skip` for optional fields
+4. Automatic validation and duplicate checking
+
+**Editing a Case Study:**
+1. Shows current value for each field
+2. Use `/keep` to retain existing values
+3. Tracks and reports changes
+4. Creates backup before saving
 
 #### Security
 
 - Bot access restricted by Telegram User ID
 - API protected by Bearer token authentication
 - All changes create automatic backups
+- Confirmation required for deletions
+- Warning when deleting cases used in profiles
 
 ## Local Development
 
@@ -167,11 +202,3 @@ npm run dev
 ```
 
 Access the local version at `http://localhost:3000/?code=LOCAL_TEST`
-
-## Documentation
-
-- [`/docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) - System architecture and data flow
-- [`/docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) - Terminal UI design specifications
-- [`/docs/CONTENT-MODEL.md`](docs/CONTENT-MODEL.md) - Content structure and data model
-- [`/docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) - Server setup and deployment guide
-- [`/docs/STRATEGY.md`](docs/STRATEGY.md) - Project vision and success metrics

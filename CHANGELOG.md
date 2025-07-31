@@ -8,16 +8,55 @@ All notable changes to this project will be documented in this file.
 
 This phase implemented a secure content management system accessible through Telegram, eliminating the need for SSH access to update portfolio content.
 
-### [Phase 6.4] - Interactive Content Editing `[FUTURE]`
--   [ ] Implement `/add_case`: A conversational wizard to create a new case study step by step.
--   [ ] Implement `/edit_case [id]`: An interactive wizard for editing fields of an existing case study.
--   [ ] Implement `/delete_case [id]`: A command to delete a case study with a confirmation step.
--   [ ] Use `grammY conversations` or `session` middleware to manage multi-step user interactions.
-
 ### [Phase 6.5] - Analytics Integration `[FUTURE]`
 -   [ ] `/analytics`: Fetch and display key statistics from the self-hosted Matomo instance.
 -   [ ] Set up alerts for significant events (e.g., a new visitor session with a high-value access code).
 -   [ ] Implement a daily/weekly summary report command.
+
+---
+
+### [Phase 6.4] - Interactive Content Editing `[COMPLETED]`
+
+This phase implemented interactive CRUD operations for case studies through the Telegram bot interface.
+
+#### Added
+- State Management System: 
+  - Created `stateManager.js` module for handling multi-step conversations
+  - Implemented in-memory state storage with automatic cleanup of stale sessions
+  - Support for different conversation flows (add_case, edit_case)
+
+- Interactive Commands:
+  - `/add_case`: Step-by-step wizard for creating new case studies
+    - 10-step process covering all case fields
+    - Support for multi-line input (approach steps, results)
+    - Validation for case ID format and uniqueness
+  - `/edit_case [id]`: Interactive editing of existing cases
+    - Shows current values for each field
+    - `/keep` command to retain existing values
+    - Tracks and reports which fields were modified
+  - `/delete_case [id]`: Safe deletion with preview
+    - Shows complete case information before deletion
+    - Warns if case is used in any profiles
+    - Inline keyboard confirmation to prevent accidents
+    - Automatically removes case from all profiles
+
+- Helper Commands:
+  - `/cancel`: Abort any active conversation and clear state
+  - `/skip`: Skip optional fields during case creation
+  - `/keep`: Keep current value during case editing
+
+#### Technical Implementation
+- All bot messages and UI elements in English for consistency
+- Comprehensive error handling with user-friendly messages
+- Automatic backup creation before any content modification
+- Support for empty/null fields in case studies
+- Preview truncation for long text fields (200-300 chars)
+
+#### Security & Validation
+- Case ID format validation (lowercase letters, numbers, underscores)
+- Duplicate ID prevention
+- Protection against accidental data loss (title required)
+- Confirmation step for destructive operations
 
 ---
 
