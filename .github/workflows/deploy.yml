@@ -1,47 +1,44 @@
 # .github/workflows/deploy.yml
 name: Deploy to DigitalOcean
 
-# Trigger the workflow on push events to the main branch
 on:
   push:
     branches:
       - main
 
 jobs:
-  deploy:
+  deploy-portfolio:
+    name: Deploy Portfolio App
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Check out the repository's code
-      - name: Checkout code
+      # Step 1: Checkout repository code
+      - name: Step 1 - Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js
-      - name: Setup Node.js
+      # Step 2: Setup Node.js
+      - name: Step 2 - Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Using the same LTS version as on the server
+          node-version: '20'
 
       # Step 3: Install dependencies and build the project
-      - name: Install and Build
+      - name: Step 3 - Install dependencies and build
         run: |
           npm install
           npm run build
 
-      # Step 4: Deploy files to the server
-      # This action securely copies files from the runner to our server
-      - name: Deploy to Server
+      # Step 4: Copy build files to the server
+      - name: Step 4 - Deploy build files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ".next, package.json, package-lock.json, public, next.config.js"
+          source: ".next, package.json, package-lock.json, public, next.config.mjs"
           target: "/home/undevy/undevy.com"
 
-      # Step 5: Run commands on the server to finalize deployment
-      # This action connects via SSH and runs the commands we need
-      - name: Finalize Deployment on Server
+      # Step 5: Install production dependencies and restart the site process
+      - name: Step 5 - Finalize portfolio deployment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -53,3 +50,48 @@ jobs:
             cd /home/undevy/undevy.com
             npm install --production
             pm2 restart undevy-portfolio
+
+  deploy-bot:
+    name: Deploy Telegram Bot
+    runs-on: ubuntu-latest
+    needs: deploy-portfolio
+    steps:
+      # Step 1: Checkout repository code
+      - name: Step 1 - Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js
+      - name: Step 2 - Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Prepare bot deployment package
+      - name: Step 3 - Prepare bot deployment package
+        run: |
+          mkdir bot-package
+          cp bot.js package.json package-lock.json bot-package/
+
+      # Step 4: Copy bot files to the server
+      - name: Step 4 - Deploy bot files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "bot-package/*"
+          target: "/home/undevy/telegram-portfolio"
+
+      # Step 5: Install production dependencies and restart the bot process
+      - name: Step 5 - Finalize bot deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /home/undevy/telegram-portfolio
+            npm install --production
+            pm2 restart portfolio-cms-bot

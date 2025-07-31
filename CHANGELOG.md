@@ -8,38 +8,66 @@ All notable changes to this project will be documented in this file.
 
 This phase implemented a secure content management system accessible through Telegram, eliminating the need for SSH access to update portfolio content.
 
-### Added
-- **Admin API Endpoint** (`/api/admin/content`):
-  - GET method to retrieve current content.json with statistics
-  - PUT method to completely replace content.json
-  - PATCH method for partial updates (with path-based targeting)
-  - Bearer token authentication for all methods
-  - Automatic JSON structure validation
-  - Backup system that maintains last 10 versions
+### [Phase 6.4] - Interactive Content Editing `[FUTURE]`
+-   [ ] Implement `/add_case`: A conversational wizard to create a new case study step by step.
+-   [ ] Implement `/edit_case [id]`: An interactive wizard for editing fields of an existing case study.
+-   [ ] Implement `/delete_case [id]`: A command to delete a case study with a confirmation step.
+-   [ ] Use `grammY conversations` or `session` middleware to manage multi-step user interactions.
 
-- **Content Validation System**:
-  - `validator.js` module for structure verification
-  - Ensures required fields (GLOBAL_DATA, profiles)
-  - Validates profile meta structure
-  - Prevents saving of malformed JSON
+### [Phase 6.5] - Analytics Integration `[FUTURE]`
+-   [ ] `/analytics`: Fetch and display key statistics from the self-hosted Matomo instance.
+-   [ ] Set up alerts for significant events (e.g., a new visitor session with a high-value access code).
+-   [ ] Implement a daily/weekly summary report command.
 
-- **Telegram Bot Integration**:
-  - Built with grammY library (modern, secure alternative to node-telegram-bot-api)
-  - Commands: `/start`, `/status`, `/get`, `/test`
-  - Inline keyboard navigation
-  - User ID-based access control
-  - Automatic file sending for large JSON responses
+---
 
-### Security Considerations
-- API protected by Bearer token (to be replaced in production)
-- Telegram bot restricted to admin user ID
-- All modifications create automatic backups
-- Content validation prevents structure corruption
+### [Phase 6.3] - Content Viewing & Code Stabilization `[COMPLETED]`
 
-### Technical Decisions
-- Chose grammY over node-telegram-bot-api due to security vulnerabilities in the latter's dependencies
-- Implemented path-based updates for future granular editing
-- Backup retention limited to 10 versions to prevent disk overflow
+This phase implemented the "Read" part of CRUD operations and significantly improved code quality and stability.
+
+#### Added
+-   Content Viewing Commands:
+    -   `/list_cases`: Displays a list of all available case studies from `content.json`.
+    -   `/preview [case_id]`: Shows a detailed preview of a specific case study.
+-   Stubs for Future Features: Added placeholder commands for `/edit_case` and `/delete_case` to outline future work.
+-   Enhanced Logging: The authorization middleware now logs both successful and unauthorized access attempts.
+
+#### Fixed
+-   Critical `replyWithDocument` Bug: The `/get` command now uses `InputFile` for robust file sending, fixing the "invalid file HTTP URL" error.
+-   `MarkdownV2` Parsing Errors: All static messages and dynamic content are now correctly escaped for `MarkdownV2`, fixing crashes on commands like `/start` and `/status`.
+-   `ReferenceError` in `bot.catch`: Imported `GrammyError` and `HttpError` to ensure the global error handler works correctly.
+-   Unsafe Array Check: The `/preview` command now safely checks if `caseDetails.approach` is an array before accessing its properties.
+
+#### Changed
+-   Code Refactoring:
+    -   Created helper functions `getBackupFiles()` and `parseBackupName()` to remove code duplication (DRY principle).
+    -   Moved all `require` statements to the top of the file for consistency and performance.
+-   Configuration: The backup directory path is now read from a `.env` variable (`BACKUP_DIR`) for better portability.
+
+---
+
+### [Phase 6.2] - Version Control System `[COMPLETED]`
+
+This phase implemented a robust system for versioning and restoring the `content.json` file.
+
+#### Added
+-   Backup & Restore Commands:
+    -   `/history`: Displays the last 10 versions of the content file from the backups folder.
+    -   `/rollback N`: Allows restoring the content to a previous version with an inline confirmation keyboard.
+    -   `/diff N [M]`: Shows a summary of differences between the current version and a backup, or between two backups.
+
+---
+
+### [Phase 6.1] - Foundation & Core API `[COMPLETED]`
+
+This phase laid the groundwork for the entire CMS system.
+
+#### Added
+-   Secure API Endpoint: Created a backend API to handle `GET` and `PUT` requests for `content.json`.
+-   Automated Backups: The API now automatically creates a timestamped backup of `content.json` before every `PUT` operation.
+-   Bot Scaffolding: Initialized a `grammY`-based Telegram bot.
+-   Core Commands: Implemented `/start`, `/status`, and `/get` commands.
+-   Authorization: Secured the bot by restricting access to a specific `ADMIN_USER_ID` from the `.env` file.
 
 ---
 

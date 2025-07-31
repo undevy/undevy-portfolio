@@ -25,7 +25,7 @@ This project is an interactive portfolio experience designed to look and feel li
 | React Context  | State Management               | Comprehensive SessionContext manages navigation, UI state, selections, and system logging across the entire application. |
 | Tailwind CSS   | CSS Framework                  | Powers a custom design system defined in `tailwind.config.js`, featuring a full color palette for themes, typography scales, and component styles. |
 | Matomo         | Web Analytics                  | Runs in a Docker container on a dedicated subdomain. Tracks user sessions with an `accessCode` Custom Dimension for granular analysis. |
-| DigitalOcean   | Cloud Hosting                  | A 1GB RAM Droplet running Ubuntu 22.04 hosts the entire stack.                                                             |
+| DigitalOcean   | Cloud Hosting                  | A 2GB RAM Droplet running Ubuntu 22.04 hosts the entire stack.                                                             |
 | Nginx          | Web Server / Reverse Proxy     | Manages incoming traffic, handles SSL termination with Certbot (Let's Encrypt), and routes requests to the Next.js app and Matomo service. |
 | PM2            | Process Manager                | A production-grade process manager that keeps the Next.js application alive and handles graceful restarts during deployments. |
 | Docker         | Containerization               | Isolates the Matomo stack (Matomo + MariaDB), ensuring a clean and reproducible service environment. |
