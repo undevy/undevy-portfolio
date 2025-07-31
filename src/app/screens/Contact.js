@@ -8,30 +8,28 @@ import { useState } from 'react';
 export default function Contact() {
   const { sessionData, theme, addLog } = useSession();
   const [emailCopied, setEmailCopied] = useState(false);
-  
+
   const contactData = sessionData?.contact || {};
-  
+
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(contactData.email);
     setEmailCopied(true);
     addLog(`EMAIL COPIED: ${contactData.email}`);
-    
-    // Сбросим статус через 2 секунды
     setTimeout(() => setEmailCopied(false), 2000);
   };
-  
+
   const handleExternalLink = (label, url) => {
     addLog(`EXTERNAL LINK: ${label}`);
     window.open(url, '_blank');
   };
-  
+
   const handleScheduleCall = () => {
     addLog('CALENDAR: Schedule request initiated');
     if (contactData.calendar_link) {
       window.open(contactData.calendar_link, '_blank');
     }
   };
-  
+
   return (
     <div className="p-4">
       <div className={`mb-4 ${
@@ -44,10 +42,8 @@ export default function Contact() {
           Ready to collaborate on your next project
         </p>
       </div>
-      
-      {/* Contact Methods */}
+
       <div className="space-y-2 mb-4">
-        {/* Email */}
         <button
           onClick={handleCopyEmail}
           className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${
@@ -77,8 +73,7 @@ export default function Contact() {
             </span>
           </div>
         </button>
-        
-        {/* Website */}
+
         <button
           onClick={() => handleExternalLink('Portfolio website', contactData.website)}
           className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${
@@ -99,8 +94,7 @@ export default function Contact() {
             theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
           }`} />
         </button>
-        
-        {/* Schedule Call */}
+
         <button
           onClick={handleScheduleCall}
           className={`w-full p-3 border rounded flex items-center transition-colors ${
@@ -117,8 +111,7 @@ export default function Contact() {
           </span>
         </button>
       </div>
-      
-      {/* Availability Status */}
+
       <div className={`p-3 border rounded ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
       }`}>
@@ -134,21 +127,21 @@ export default function Contact() {
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {contactData.location}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $work_type:
           </span>
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {contactData.availability?.work_type}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $target_comp:
           </span>
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {contactData.availability?.target_comp}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $start_date:
           </span>
@@ -157,8 +150,7 @@ export default function Contact() {
           </span>
         </div>
       </div>
-      
-      {/* Social Links (опционально) */}
+
       {contactData.social_links && (
         <div className={`mt-3 p-3 border rounded ${
           theme === 'dark' ? 'border-dark-border' : 'border-light-border'

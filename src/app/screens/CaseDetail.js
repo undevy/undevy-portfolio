@@ -7,7 +7,6 @@ import Tabs from '../components/ui/Tabs';
 export default function CaseDetail() {
   const { sessionData, theme, navigate, addLog, selectedCase } = useSession();
   
-  // Если нет выбранного кейса, показываем заглушку
   if (!selectedCase) {
     return (
       <div className="p-4 text-center">
@@ -27,11 +26,9 @@ export default function CaseDetail() {
       </div>
     );
   }
-  
-  // Получаем детальные данные о кейсе
+
   const caseDetails = sessionData?.case_details?.[selectedCase.id] || {};
-  
-  // Подготавливаем табы
+
   const tabs = [
     {
       id: 'challenge',
@@ -61,7 +58,6 @@ export default function CaseDetail() {
       type: 'custom',
       content: (
         <div>
-          {/* Results List */}
           <div className="space-y-2 mb-4">
             {(caseDetails.results || []).map((result, idx) => (
               <div
@@ -75,8 +71,7 @@ export default function CaseDetail() {
               </div>
             ))}
           </div>
-          
-          {/* Learnings Section */}
+
           {caseDetails.learnings && (
             <div className={`border-t pt-3 mt-3 ${
               theme === 'dark' ? 'border-dark-border' : 'border-light-border'
@@ -100,7 +95,6 @@ export default function CaseDetail() {
   
   return (
     <div className="p-4">
-      {/* Header */}
       <div className={`mb-4 ${
         theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
       }`}>
@@ -111,8 +105,7 @@ export default function CaseDetail() {
           {selectedCase.desc}
         </p>
       </div>
-      
-      {/* Case Info Panel */}
+
       <div className={`p-3 border rounded mb-3 ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
       }`}>
@@ -126,15 +119,13 @@ export default function CaseDetail() {
         }`}>
           {selectedCase.id}
         </div>
-        
-        {/* Metrics */}
+
         <div className={`text-sm ${
           theme === 'dark' ? 'text-dark-success' : 'text-light-success'
         }`}>
           {selectedCase.metrics}
         </div>
-        
-        {/* Tags */}
+
         <div className="flex flex-wrap gap-1 mt-2">
           {selectedCase.tags?.map((tag) => (
             <span
@@ -150,11 +141,9 @@ export default function CaseDetail() {
           ))}
         </div>
       </div>
-      
-      {/* Tabs Component */}
+
       <Tabs tabs={tabs} defaultTab="challenge" />
-      
-      {/* Navigation Buttons */}
+
       <div className="mt-4 flex gap-2">
         <button
           onClick={() => {

@@ -7,8 +7,7 @@ import { ChevronRight } from 'lucide-react';
 
 export default function RoleDetail() {
   const { sessionData, theme, navigate, addLog, selectedRole } = useSession();
-  
-  // Если нет выбранной роли, показываем заглушку
+
   if (!selectedRole) {
     return (
       <div className="p-4 text-center">
@@ -28,11 +27,9 @@ export default function RoleDetail() {
       </div>
     );
   }
-  
-  // Получаем детальные данные о роли
+
   const roleDetails = sessionData?.role_details?.[selectedRole.id] || {};
-  
-  // Подготавливаем секции для аккордеона
+
   const sections = [
     {
       id: 'summary',
@@ -74,7 +71,7 @@ export default function RoleDetail() {
       )
     }
   ];
-  
+
   return (
     <div className="p-4">
       {/* Header */}
@@ -88,8 +85,8 @@ export default function RoleDetail() {
           Role details and achievements
         </p>
       </div>
-      
-      {/* Role Info Panel */}
+
+      {/* Role Info */}
       <div className={`p-3 border rounded mb-3 ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
       }`}>
@@ -105,14 +102,14 @@ export default function RoleDetail() {
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {selectedRole.role}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $period:
           </span>
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {selectedRole.period}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $duration:
           </span>
@@ -121,11 +118,11 @@ export default function RoleDetail() {
           </span>
         </div>
       </div>
-      
-      {/* Accordion Sections */}
+
+      {/* Accordion Content */}
       <Accordion sections={sections} defaultExpanded="summary" />
-      
-      {/* Navigation Buttons */}
+
+      {/* Navigation */}
       <div className="mt-4 flex gap-2">
         <button
           onClick={() => {
@@ -140,7 +137,7 @@ export default function RoleDetail() {
         >
           BACK TO TIMELINE
         </button>
-        
+
         <button
           onClick={() => {
             addLog('VIEW CASE STUDIES');

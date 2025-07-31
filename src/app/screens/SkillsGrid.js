@@ -6,7 +6,7 @@ import { useSession } from '../context/SessionContext';
 export default function SkillsGrid() {
   const { sessionData, theme, navigate, addLog, setSelectedSkill } = useSession();
   
-  // Получаем навыки из sessionData
+  // Check if there are any skills available
   const skills = sessionData?.skills || [];
   
   const handleSkillClick = (skill) => {
@@ -15,7 +15,7 @@ export default function SkillsGrid() {
     navigate('SkillDetail');
   };
   
-  // Функция для определения цвета уровня навыка
+  // Function to determine the color based on skill level
   const getLevelColor = (level) => {
     switch(level) {
       case 'EXPERT':

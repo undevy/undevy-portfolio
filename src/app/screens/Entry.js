@@ -10,31 +10,29 @@ export default function Entry() {
   const [isLoading, setIsLoading] = useState(false);
   const { theme, addLog } = useSession();
   const router = useRouter();
-  
+
   const handleSubmit = async () => {
     if (!code.trim()) {
       addLog('ERROR: No access code provided');
       return;
     }
-    
+
     setIsLoading(true);
     addLog(`AUTHENTICATING: ${code}`);
-    
-    // Navigate to URL with code - this will trigger authentication
     router.push(`/?code=${code}`);
   };
-  
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !isLoading) {
       handleSubmit();
     }
   };
-  
+
   const handleGetCode = () => {
     addLog('EXTERNAL LINK: Telegram @undevy');
     window.open('https://t.me/undevy', '_blank');
   };
-  
+
   return (
     <div className="p-4">
       <input
@@ -51,7 +49,7 @@ export default function Entry() {
         autoFocus
         disabled={isLoading}
       />
-      
+
       <button
         onClick={handleSubmit}
         disabled={isLoading}
@@ -63,7 +61,7 @@ export default function Entry() {
       >
         {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
       </button>
-      
+
       <button
         onClick={handleGetCode}
         className={`w-full p-3 border rounded font-bold transition-colors ${

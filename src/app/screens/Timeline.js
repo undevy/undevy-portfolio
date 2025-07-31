@@ -7,7 +7,7 @@ import { ChevronRight } from 'lucide-react';
 export default function Timeline() {
   const { sessionData, theme, navigate, addLog, setSelectedRole } = useSession();
   
-  // Получаем список ролей из experience
+  // Check if there are any roles available
   const roles = sessionData?.experience || [];
   const timeline = sessionData?.meta?.timeline || 'scenario_a';
   
@@ -16,8 +16,8 @@ export default function Timeline() {
     addLog(`ROLE SELECTED: ${role.company}`);
     navigate('RoleDetail');
   };
-  
-  // Подсчёт общего времени опыта
+
+  // Calculate total years of experience
   const totalYears = roles.reduce((acc, role) => {
     const years = parseInt(role.duration) || 0;
     return acc + years;

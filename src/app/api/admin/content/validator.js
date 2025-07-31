@@ -1,11 +1,10 @@
 // src/app/api/admin/content/validator.js
-// Валидация структуры content.json
 
-// Проверяем, что объект имеет правильную структуру профиля
+// Validates the structure of a single profile
 function validateProfile(profile) {
   if (!profile || typeof profile !== 'object') return false;
   
-  // Проверяем обязательные поля meta
+  // Required meta fields
   if (!profile.meta || typeof profile.meta !== 'object') return false;
   if (!profile.meta.company || typeof profile.meta.company !== 'string') return false;
   if (!profile.meta.timeline || typeof profile.meta.timeline !== 'string') return false;
@@ -13,48 +12,40 @@ function validateProfile(profile) {
   return true;
 }
 
-// Проверяем структуру GLOBAL_DATA
+// Validates the structure of GLOBAL_DATA
 function validateGlobalData(globalData) {
   if (!globalData || typeof globalData !== 'object') return false;
   
-  // Проверяем наличие основных секций
   const requiredSections = ['menu', 'experience', 'skills'];
   for (const section of requiredSections) {
     if (!globalData[section]) return false;
   }
   
-  // Проверяем, что menu - это массив
   if (!Array.isArray(globalData.menu)) return false;
-  
-  // Проверяем, что experience - это объект со сценариями
   if (typeof globalData.experience !== 'object') return false;
   
   return true;
 }
 
-// Основная функция валидации
+// Validates the full content.json structure
 export function validateContentStructure(content) {
   const errors = [];
   
-  // Проверяем, что content - это объект
   if (!content || typeof content !== 'object') {
     errors.push('Content must be an object');
     return { valid: false, errors };
   }
   
-  // Проверяем наличие GLOBAL_DATA
   if (!content.GLOBAL_DATA) {
     errors.push('GLOBAL_DATA is required');
   } else if (!validateGlobalData(content.GLOBAL_DATA)) {
     errors.push('GLOBAL_DATA has invalid structure');
   }
   
-  // Проверяем все профили (ключи в uppercase)
   let hasAtLeastOneProfile = false;
   for (const [key, value] of Object.entries(content)) {
     if (key === 'GLOBAL_DATA') continue;
     
-    // Профили должны быть в uppercase
     if (key === key.toUpperCase()) {
       hasAtLeastOneProfile = true;
       if (!validateProfile(value)) {
@@ -73,7 +64,7 @@ export function validateContentStructure(content) {
   };
 }
 
-// Безопасное слияние объектов (для будущего PATCH метода)
+// Deep merge utility for nested patching
 export function deepMerge(target, source) {
   const output = { ...target };
   

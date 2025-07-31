@@ -4,20 +4,16 @@ import fs from 'fs/promises';
 import path from 'path';
 import { validateContentStructure, deepMerge } from './validator';
 
-// Секретный токен для доступа к API
 const ADMIN_TOKEN = 'your-super-secret-token-2024';
 
-// Определяем путь к файлу в зависимости от окружения
 const CONTENT_FILE_PATH = process.env.NODE_ENV === 'production' 
   ? '/home/undevy/content.json'
   : path.join(process.cwd(), 'src/app/test-content.json');
 
-// Путь к папке с бэкапами
 const BACKUP_DIR = process.env.NODE_ENV === 'production'
   ? '/home/undevy/content-backups'
   : path.join(process.cwd(), 'content-backups');
 
-// Функция для проверки авторизации
 function isAuthorized(request) {
   const authHeader = request.headers.get('authorization');
   if (!authHeader) return false;
@@ -26,7 +22,6 @@ function isAuthorized(request) {
   return token === ADMIN_TOKEN;
 }
 
-// Функция создания бэкапа
 async function createBackup(currentContent) {
   try {
     await fs.mkdir(BACKUP_DIR, { recursive: true });
@@ -36,8 +31,8 @@ async function createBackup(currentContent) {
     
     await fs.writeFile(backupPath, currentContent);
     console.log('[ADMIN API] Backup created:', backupPath);
-    
-    // Удаляем старые бэкапы (оставляем только последние 10)
+
+    // Keep only the 10 most recent backups
     const files = await fs.readdir(BACKUP_DIR);
     const backupFiles = files
       .filter(f => f.startsWith('content-') && f.endsWith('.json'))
@@ -58,7 +53,6 @@ async function createBackup(currentContent) {
   }
 }
 
-// GET - получить текущий content.json
 export async function GET(request) {
   console.log('[ADMIN API] GET request received');
   
@@ -70,8 +64,7 @@ export async function GET(request) {
   try {
     const fileContent = await fs.readFile(CONTENT_FILE_PATH, 'utf-8');
     const content = JSON.parse(fileContent);
-    
-    // Добавляем статистику
+
     const stats = {
       profilesCount: Object.keys(content).filter(k => k === k.toUpperCase() && k !== 'GLOBAL_DATA').length,
       lastModified: (await fs.stat(CONTENT_FILE_PATH)).mtime,
@@ -94,7 +87,6 @@ export async function GET(request) {
   }
 }
 
-// PUT - полностью заменить content.json
 export async function PUT(request) {
   console.log('[ADMIN API] PUT request received');
   
@@ -103,10 +95,8 @@ export async function PUT(request) {
   }
   
   try {
-    // Получаем новый контент
     const newContent = await request.json();
     
-    // Валидируем структуру
     const validation = validateContentStructure(newContent);
     if (!validation.valid) {
       return NextResponse.json(
@@ -115,7 +105,6 @@ export async function PUT(request) {
       );
     }
     
-    // Читаем текущий контент для бэкапа
     let backupPath = null;
     try {
       const currentContent = await fs.readFile(CONTENT_FILE_PATH, 'utf-8');
@@ -124,7 +113,6 @@ export async function PUT(request) {
       console.log('[ADMIN API] No existing file to backup');
     }
     
-    // Записываем новый контент
     await fs.writeFile(
       CONTENT_FILE_PATH,
       JSON.stringify(newContent, null, 2)
@@ -146,7 +134,6 @@ export async function PUT(request) {
   }
 }
 
-// PATCH - частичное обновление
 export async function PATCH(request) {
   console.log('[ADMIN API] PATCH request received');
   
@@ -164,14 +151,11 @@ export async function PATCH(request) {
       );
     }
     
-    // Читаем текущий контент
     const fileContent = await fs.readFile(CONTENT_FILE_PATH, 'utf-8');
     const currentContent = JSON.parse(fileContent);
     
-    // Создаём бэкап
     await createBackup(fileContent);
     
-    // Применяем изменение
     const pathParts = updatePath.split('.');
     let target = currentContent;
     
@@ -184,7 +168,6 @@ export async function PATCH(request) {
     
     target[pathParts[pathParts.length - 1]] = value;
     
-    // Валидируем результат
     const validation = validateContentStructure(currentContent);
     if (!validation.valid) {
       return NextResponse.json(
@@ -193,7 +176,6 @@ export async function PATCH(request) {
       );
     }
     
-    // Сохраняем
     await fs.writeFile(
       CONTENT_FILE_PATH,
       JSON.stringify(currentContent, null, 2)
@@ -215,7 +197,6 @@ export async function PATCH(request) {
   }
 }
 
-// OPTIONS для CORS
 export async function OPTIONS(request) {
   return new NextResponse(null, { status: 200 });
 }

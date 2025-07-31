@@ -44,7 +44,7 @@ export default function AnalyticsPanel() {
 
   return (
     <div className={panelClasses}>
-      <h2 className={`font-bold text-base mb-2 ${labelClasses}`}>$analytics</h2>
+      <h2 className={`text-base mb-2 ${labelClasses}`}>$analytics</h2>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         <span className={labelClasses}>$company:</span>
         <span className={valueClasses}>{sessionData.meta?.company || sessionData.company}</span>

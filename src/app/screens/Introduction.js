@@ -6,18 +6,18 @@ import { ChevronRight } from 'lucide-react';
 
 export default function Introduction() {
   const { sessionData, theme, navigate, addLog } = useSession();
-  
-  // Получаем данные профиля
+
   const profile = sessionData?.profile || {};
-  const introText = sessionData?.introduction?.[sessionData?.meta?.tone] || 
-                   sessionData?.introduction?.formal ||
-                   "Welcome to my portfolio!";
-  
+  const introText =
+    sessionData?.introduction?.[sessionData?.meta?.tone] ||
+    sessionData?.introduction?.formal ||
+    'Welcome to my portfolio!';
+
   const handleNavigate = (screen, label) => {
     addLog(`NAVIGATE: ${label}`);
     navigate(screen);
   };
-  
+
   return (
     <div className="p-4">
       {/* Profile Summary Panel */}
@@ -43,7 +43,7 @@ export default function Introduction() {
           </span>
         </div>
       </div>
-      
+
       {/* Introduction Text */}
       <div className={`p-3 border rounded mb-3 ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
@@ -59,7 +59,7 @@ export default function Introduction() {
           {introText}
         </p>
       </div>
-      
+
       {/* Core Attributes */}
       <div className={`p-3 border rounded mb-3 ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
@@ -74,13 +74,13 @@ export default function Introduction() {
             <div key={index} className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
               <span className={theme === 'dark' ? 'text-dark-success' : 'text-light-success'}>
                 [√]
-              </span>
-              {' '}{attr}
+              </span>{' '}
+              {attr}
             </div>
           ))}
         </div>
       </div>
-      
+
       {/* Current Status */}
       <div className={`p-3 border rounded mb-3 ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
@@ -97,14 +97,14 @@ export default function Introduction() {
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {profile.status?.seeking}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $location:
           </span>
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {profile.status?.location}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $availability:
           </span>
@@ -113,7 +113,7 @@ export default function Introduction() {
           </span>
         </div>
       </div>
-      
+
       {/* Navigation Buttons */}
       <div className="flex gap-2">
         <button
@@ -127,7 +127,7 @@ export default function Introduction() {
           VIEW EXPERIENCE
           <ChevronRight className="w-4 h-4 ml-1" />
         </button>
-        
+
         <button
           onClick={() => handleNavigate('Contact', 'contact info')}
           className={`flex-1 p-2 border rounded flex items-center justify-center transition-colors ${

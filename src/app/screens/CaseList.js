@@ -6,21 +6,19 @@ import { ChevronRight } from 'lucide-react';
 
 export default function CaseList() {
   const { sessionData, theme, navigate, addLog, setSelectedCase } = useSession();
-  
-  // Получаем отфильтрованные кейсы из sessionData
+
   const cases = sessionData?.case_studies || {};
   const caseIds = Object.keys(cases);
-  const totalCasesCount = 7; // Общее количество всех возможных кейсов
-  
+  const totalCasesCount = 7;
+
   const handleCaseClick = (caseId, caseData) => {
     setSelectedCase({ id: caseId, ...caseData });
     addLog(`CASE SELECTED: ${caseData.title}`);
     navigate('CaseDetail');
   };
-  
+
   return (
     <div className="p-4">
-      {/* Header */}
       <div className={`mb-4 ${
         theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
       }`}>
@@ -31,8 +29,7 @@ export default function CaseList() {
           Selected projects demonstrating impact and process
         </p>
       </div>
-      
-      {/* Loading Indicator */}
+
       <div className={`mb-3 p-3 border rounded ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
       }`}>
@@ -46,13 +43,11 @@ export default function CaseList() {
         }`}>
           <div className="flex items-center gap-2">
             <span>[</span>
-            {/* Заполненные квадраты для загруженных кейсов */}
             {Array.from({ length: caseIds.length }, (_, i) => (
               <span key={`loaded-${i}`} className={theme === 'dark' ? 'text-dark-success' : 'text-light-success'}>
                 ■
               </span>
             ))}
-            {/* Пустые квадраты для остальных */}
             {Array.from({ length: totalCasesCount - caseIds.length }, (_, i) => (
               <span key={`empty-${i}`} className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
                 □
@@ -65,8 +60,7 @@ export default function CaseList() {
           </div>
         </div>
       </div>
-      
-      {/* Cases List */}
+
       <div className="space-y-2">
         {caseIds.map((caseId) => {
           const caseData = cases[caseId];
@@ -80,35 +74,30 @@ export default function CaseList() {
                   : 'border-light-border hover:bg-light-hover'
               }`}
             >
-              {/* Case ID */}
               <div className={`text-sm mb-1 ${
                 theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
               }`}>
                 ${caseId}
               </div>
-              
-              {/* Case Title */}
+
               <div className={`mb-1 ${
                 theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
               }`}>
                 {caseData.title}
               </div>
-              
-              {/* Case Description */}
+
               <div className={`text-xs mb-2 ${
                 theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
               }`}>
                 {caseData.desc}
               </div>
-              
-              {/* Metrics */}
+
               <div className={`text-xs mb-2 ${
                 theme === 'dark' ? 'text-dark-success' : 'text-light-success'
               }`}>
                 {caseData.metrics}
               </div>
-              
-              {/* Tags */}
+
               <div className="flex flex-wrap gap-1">
                 {caseData.tags?.map((tag) => (
                   <span
@@ -127,8 +116,7 @@ export default function CaseList() {
           );
         })}
       </div>
-      
-      {/* Summary Stats */}
+
       <div className={`mt-4 p-3 border rounded ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
       }`}>
@@ -144,14 +132,14 @@ export default function CaseList() {
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {caseIds.length}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             industries:
           </span>
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
             {new Set(caseIds.flatMap(id => cases[id].tags || [])).size}
           </span>
-          
+
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             focus:
           </span>

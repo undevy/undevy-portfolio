@@ -6,8 +6,7 @@ import { ChevronRight } from 'lucide-react';
 
 export default function MainHub() {
   const { sessionData, theme, navigate, addLog } = useSession();
-  
-  // Используем меню из sessionData или дефолтное
+
   const menuItems = sessionData?.menu || [
     { label: 'about_me', screen: 'Introduction', icon: '[USR]', desc: 'Background & approach' },
     { label: 'experience', screen: 'Timeline', icon: '[EXP]', desc: '9 years in product design' },
@@ -16,7 +15,7 @@ export default function MainHub() {
     { label: 'side_projects', screen: 'SideProjects', icon: '[LAB]', desc: 'Personal initiatives' },
     { label: 'contact', screen: 'Contact', icon: '[MSG]', desc: 'Get in touch' }
   ];
-  
+
   return (
     <div className="p-4">
       <div className="text-center mb-6">
@@ -25,13 +24,11 @@ export default function MainHub() {
         }`}>
           Welcome, {sessionData?.profile?.greeting_name || 'Guest'}!
         </h1>
-        <p className={`${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-        }`}>
+        <p className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
           Please select a section to continue.
         </p>
       </div>
-      
+
       <div className="space-y-2 max-w-2xl mx-auto">
         {menuItems.map((item) => (
           <button
@@ -53,9 +50,7 @@ export default function MainHub() {
                 {item.icon}
               </span>
               <div className="flex-1">
-                <div className={`${
-                  theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-                }`}>
+                <div className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
                   {item.label}
                 </div>
                 <div className={`text-xs mt-1 ${
