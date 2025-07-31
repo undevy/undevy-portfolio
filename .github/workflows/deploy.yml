@@ -70,7 +70,7 @@ jobs:
       - name: Step 3 - Prepare bot deployment package
         run: |
           mkdir bot-package
-          cp bot.js package.json package-lock.json bot-package/
+          cp telegram-bot/bot.js telegram-bot/package.json telegram-bot/package-lock.json bot-package/
 
       # Step 4: Copy bot files to the server
       - name: Step 4 - Deploy bot files to server
