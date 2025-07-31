@@ -60,30 +60,19 @@ jobs:
       - name: Step 1 - Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js
-      - name: Step 2 - Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      # Step 3: Prepare bot deployment package
-      - name: Step 3 - Prepare bot deployment package
-        run: |
-          mkdir bot-package
-          cp telegram-bot/bot.js telegram-bot/package.json telegram-bot/package-lock.json bot-package/
-
-      # Step 4: Copy bot files to the server
-      - name: Step 4 - Deploy bot files to server
+      # Step 2: Copy bot files to the server
+      - name: Step 2 - Deploy bot files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "bot-package/*"
-          target: "/home/undevy/telegram-portfolio"
+          source: "telegram-bot/bot.js,telegram-bot/package.json,telegram-bot/package-lock.json"
+          target: "/home/undevy"
+          strip_components: 1
 
-      # Step 5: Install production dependencies and restart the bot process
-      - name: Step 5 - Finalize bot deployment
+      # Step 3: Install production dependencies and restart the bot process
+      - name: Step 3 - Finalize bot deployment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -92,6 +81,6 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /home/undevy/telegram-portfolio
+            cd /home/undevy/telegram-bot
             npm install --production
             pm2 restart portfolio-cms-bot
