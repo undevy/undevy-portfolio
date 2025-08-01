@@ -8,7 +8,7 @@ export default function MatomoTracker() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const MATOMO_URL = 'http://analytics.undevy.com';
+    const MATOMO_URL = 'https://analytics.undevy.com';
     const SITE_ID = '1';
     const accessCode = searchParams.get('code');
 
