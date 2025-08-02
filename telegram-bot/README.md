@@ -156,12 +156,3 @@ Logs can be viewed with:
 ```bash
 pm2 logs portfolio-cms-bot
 ```
-
-## Future Enhancements
-
-1. Bulk Operations - Add/remove tags from multiple cases
-2. Search Functionality - Find cases by keyword
-3. Templates - Save and reuse case templates
-4. Export/Import - CSV or JSON bulk operations
-5. Rich Media - Support for images in cases
-6. Audit Log - Track who made what changes when

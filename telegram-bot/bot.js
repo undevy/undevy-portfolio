@@ -20,6 +20,9 @@ const { Bot, InlineKeyboard, GrammyError, HttpError, InputFile } = require('gram
 // 5. Import custom state manager
 const stateManager = require('./stateManager');
 
+// 6. Import analytics monitor
+const AnalyticsMonitor = require('./analytics');
+
 // --- Configuration ---
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const apiUrl = process.env.API_URL;
@@ -33,6 +36,9 @@ if (!token || !apiUrl || !apiToken) {
 }
 
 const bot = new Bot(token);
+
+// Initialize analytics monitor
+const analyticsMonitor = new AnalyticsMonitor(bot, adminUserId);
 
 // --- Helper Functions ---
 
@@ -706,14 +712,22 @@ bot.command(['start', 'help'], async (ctx) => {
 Available commands:
 \\- /status — Check system status
 \\- /get — Download current content\\.json
+
 \\- /history — View change history \\(last 10 versions\\)
 \\- /rollback N — Restore version N from history
 \\- /diff N \\[M\\] — Compare versions
+
 \\- /list\\_cases — List available case studies
 \\- /preview \\[case\\_id\\] — View case study details
 \\- /add\\_case — Create new case study \\(interactive\\)
 \\- /edit\\_case \\[id\\] — Edit existing case study \\(interactive\\)
 \\- /delete\\_case \\[id\\] — Delete case study with preview
+
+\\- /analytics — Force check for new visits
+\\- /recent\\_visits — Show last 5 visits
+\\- /analytics\\_stop — Stop monitoring
+\\- /analytics\\_start — Start monitoring
+
 \\- /cancel — Cancel active dialog
 \\- /skip — Skip optional field during input
 
@@ -1242,6 +1256,153 @@ bot.command('keep', async (ctx) => {
   await handleEditCaseInput(ctx);
 });
 
+bot.command('analytics', async (ctx) => {
+  await ctx.reply('⏳ Checking for recent visits...');
+  
+  // Force immediate check
+  analyticsMonitor.lastCheckTime = new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
+  await analyticsMonitor.checkForNewVisits();
+  
+  await ctx.reply('✅ Analytics check completed');
+});
+
+bot.command('analytics_stop', async (ctx) => {
+  analyticsMonitor.stop();
+  await ctx.reply('🛑 Analytics monitoring stopped');
+});
+
+bot.command('analytics_start', async (ctx) => {
+  analyticsMonitor.start();
+  await ctx.reply('▶️ Analytics monitoring started');
+});
+
+bot.command('recent_visits', async (ctx) => {
+  try {
+    await ctx.reply('📊 Fetching recent visits...');
+    
+    const url = `https://analytics.undevy.com/index.php?module=API&method=Live.getLastVisitsDetails&idSite=1&period=day&date=today&format=json&token_auth=${process.env.MATOMO_TOKEN}&filter_limit=5`;
+    
+    const response = await fetch(url);
+    const visits = await response.json();
+    
+    if (!visits || visits.length === 0) {
+      return await ctx.reply('No visits found today');
+    }
+    
+    // Process each visit
+    for (const visit of visits) {
+      // Extract access code
+      let accessCode = null;
+      if (visit.customDimensions && visit.customDimensions['1']) {
+        accessCode = visit.customDimensions['1'];
+      } else {
+        const firstAction = visit.actionDetails.find(action => action.url && action.url.includes('code='));
+        if (firstAction) {
+          const urlMatch = firstAction.url.match(/[?&]code=([^&#]+)/);
+          if (urlMatch) {
+            accessCode = urlMatch[1];
+          }
+        }
+      }
+      
+      // Extract pages
+      const pages = visit.actionDetails
+        .filter(action => action.type === 'action' && action.url)
+        .map(action => {
+          const url = action.url;
+          const hashMatch = url.match(/#([^&?\s]+)/);
+          if (hashMatch && hashMatch[1]) {
+            return hashMatch[1];
+          }
+          if (url.includes('?code=') && !url.includes('#')) {
+            return 'Entry';
+          }
+          return 'Unknown';
+        })
+        .filter((page, index, self) => index === 0 || page !== self[index - 1]);
+      
+      // Format message
+      const visitDate = new Date(visit.serverTimestamp * 1000);
+      const formattedDate = visitDate.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      
+      let message = accessCode ? `🎯 **Visit with code:** \`${accessCode}\`\n` : `👤 **Anonymous visit**\n`;
+      message += `🕐 ${formattedDate}\n`;
+      message += `📍 ${visit.country || 'Unknown'}, ${visit.city || 'Unknown'}\n`;
+      message += `📱 ${visit.deviceType} (${visit.browserName})\n`;
+      message += `📄 ${pages.join(' → ')}\n`;
+      message += `⏱️ ${visit.visitDurationPretty || '0s'}\n`;
+      message += `━━━━━━━━━━━━━━━━━━━\n`;
+      
+      await ctx.reply(message);
+    }
+    
+    await ctx.reply('✅ That\'s all for today!');
+    
+  } catch (error) {
+    await ctx.reply(`❌ Error: ${error.message}`);
+  }
+});
+
+bot.command('test_matomo', async (ctx) => {
+  try {
+    await ctx.reply('🔍 Testing Matomo API connection...');
+    
+    const testUrl = `https://analytics.undevy.com/index.php?module=API&method=SitesManager.getSiteFromId&idSite=1&format=json&token_auth=${process.env.MATOMO_TOKEN}`;
+    
+    const response = await fetch(testUrl);
+    const data = await response.json();
+    
+    if (data && data.name) {
+      await ctx.reply(`✅ Matomo API works!\n\nSite name: ${data.name}`);
+    } else {
+      await ctx.reply('⚠️ Got response but unexpected format');
+    }
+  } catch (error) {
+    await ctx.reply(`❌ API Error: ${error.message}`);
+  }
+});
+
+bot.command('debug_visits', async (ctx) => {
+  try {
+    await ctx.reply('🔍 Fetching last 5 visits from Matomo...');
+    
+    const url = `https://analytics.undevy.com/index.php?module=API&method=Live.getLastVisitsDetails&idSite=1&period=day&date=today&format=json&token_auth=${process.env.MATOMO_TOKEN}&filter_limit=5`;
+    
+    const response = await fetch(url);
+    const visits = await response.json();
+    
+    if (!visits || visits.length === 0) {
+      return await ctx.reply('No visits found today');
+    }
+    
+    let message = `Found ${visits.length} visits:\n\n`;
+    
+    visits.forEach((visit, index) => {
+      message += `Visit ${index + 1}:\n`;
+      message += `- Time: ${visit.serverTimePretty}\n`;
+      message += `- Custom Dimensions: ${JSON.stringify(visit.customDimensions || {})}\n`;
+      message += `- Pages: ${visit.actions}\n`;
+      message += `- Country: ${visit.country}\n\n`;
+    });
+    
+    // Split message if too long
+    if (message.length > 4000) {
+      message = message.substring(0, 4000) + '...\n\n(Message truncated)';
+    }
+    
+    await ctx.reply(message);
+    
+  } catch (error) {
+    await ctx.reply(`❌ Error: ${error.message}`);
+  }
+});
+
 bot.command('test', async (ctx) => {
     const keyboard = new InlineKeyboard()
       .text('📊 Status', 'action_status')
@@ -1305,7 +1466,22 @@ bot.catch((err) => {
 
 // --- Startup ---
 bot.start({
-  onStart: () => console.log('Bot started successfully! Waiting for messages...'),
+  onStart: () => {
+    console.log('Bot started successfully! Waiting for messages...');
+    
+    // Start analytics monitoring
+    analyticsMonitor.start();
+    console.log('Analytics monitoring started');
+  },
+});
+
+process.once('SIGINT', () => {
+  analyticsMonitor.stop();
+  bot.stop('SIGINT');
+});
+process.once('SIGTERM', () => {
+  analyticsMonitor.stop();
+  bot.stop('SIGTERM');
 });
 
 process.once('SIGINT', () => bot.stop('SIGINT'));

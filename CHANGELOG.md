@@ -4,14 +4,34 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [Phase 6] - Headless CMS via Telegram Bot
+### [Phase 6.5] - Analytics Integration (Partial) `[IN PROGRESS]`
 
-This phase implemented a secure content management system accessible through Telegram, eliminating the need for SSH access to update portfolio content.
+This phase implements basic Matomo analytics integration for the Telegram bot.
 
-### [Phase 6.5] - Analytics Integration `[FUTURE]`
--   [ ] `/analytics`: Fetch and display key statistics from the self-hosted Matomo instance.
--   [ ] Set up alerts for significant events (e.g., a new visitor session with a high-value access code).
--   [ ] Implement a daily/weekly summary report command.
+#### Added
+- Analytics Monitoring System:
+  - `analytics.js` module for Matomo API integration
+  - Automatic monitoring every 5 minutes for new visits
+  - Real-time notifications for authenticated and anonymous visits
+  - Visitor details: location, device, pages visited, duration
+
+- Analytics Commands:
+  - `/analytics` - Force immediate check for new visits
+  - `/recent_visits` - Display last 5 visits with details
+  - `/analytics_stop` - Stop automatic monitoring
+  - `/analytics_start` - Resume automatic monitoring
+  - `/test_matomo` - Test Matomo API connection
+  - `/debug_visits` - Debug raw Matomo data
+
+#### Known Issues
+- Custom dimensions not working (using URL parameter fallback)
+- Page tracking shows generic titles instead of screen names
+- Company names not loading from content.json
+- See KNOWN_ISSUES.md for complete list
+
+#### Security Notes
+- Matomo API token must be set in production .env
+- Never commit real tokens to repository
 
 ---
 

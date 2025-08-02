@@ -24,11 +24,15 @@ export default function AnalyticsPanel() {
   }`;
   
   const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+
+    const yellowClasses = `${
     theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
   }`;
   
   const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
   }`;
   
   const secondaryClasses = `${
@@ -44,7 +48,7 @@ export default function AnalyticsPanel() {
 
   return (
     <div className={panelClasses}>
-      <h2 className={`text-base mb-2 ${labelClasses}`}>$analytics</h2>
+      <h2 className={`text-base mb-2 ${yellowClasses}`}>$analytics</h2>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         <span className={labelClasses}>$company:</span>
         <span className={valueClasses}>{sessionData.meta?.company || sessionData.company}</span>
@@ -63,7 +67,7 @@ export default function AnalyticsPanel() {
       <div className={`mt-3 pt-2 border-t ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
       }`}>
-        <div className={`${labelClasses} text-xs mb-1`}>$navigation_path</div>
+        <div className={`${yellowClasses} text-xs mb-1`}>$navigation_path</div>
         <div className={`text-xs flex items-center flex-wrap`}>
           {navigationHistory.length > 0 ? (
             <>
@@ -77,7 +81,7 @@ export default function AnalyticsPanel() {
                     >
                       {screen}
                     </button>
-                    <span className={`mx-1 ${secondaryClasses}`}>{'>'}</span>
+                    <span className={`mx-1 ${labelClasses}`}>{'>'}</span>
                   </span>
                 );
               })}

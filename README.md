@@ -187,6 +187,36 @@ The bot uses a conversational interface for complex operations:
 - Confirmation required for deletions
 - Warning when deleting cases used in profiles
 
+## Analytics Integration
+
+The portfolio includes real-time analytics monitoring through the Telegram bot.
+
+### Features
+
+- **Automatic Monitoring**: Bot checks for new visits every 5 minutes
+- **Instant Notifications**: Get alerted when someone accesses your portfolio
+- **Visitor Details**: See access codes, location, device type, and navigation paths
+- **Manual Controls**: Force checks or view recent visits on demand
+
+### Analytics Commands
+
+- `/analytics` - Force check for new visits
+- `/recent_visits` - Show last 5 visits with details
+- `/analytics_stop` - Stop automatic monitoring
+- `/analytics_start` - Resume monitoring
+- `/test_matomo` - Test API connection
+- `/debug_visits` - Debug raw visit data
+
+### Setup
+
+1. Get your Matomo API token from Settings → Personal → Security → Auth tokens
+2. Add to bot's `.env` file:
+```
+MATOMO_TOKEN=your-token-here
+```
+3. Restart the bot to begin monitoring
+
+
 ## Local Development
 
 ```bash
