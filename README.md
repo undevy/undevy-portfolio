@@ -1,3 +1,11 @@
+# ⚠️ REPOSITORY MOVED
+
+This repository has been moved to the organization account.
+
+**New location:** https://github.com/undevy-org/portfolio
+
+Please update your bookmarks and local clones.
+
 # Interactive Terminal Portfolio
 
 This project is an interactive portfolio experience designed to look and feel like a classic computer terminal. It features a unique gated access system, dynamic content based on the access code, and detailed, self-hosted analytics. After authentication, the application operates as a seamless Single Page Application (SPA) with hash-based routing.
