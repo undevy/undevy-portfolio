@@ -9,6 +9,9 @@
 !.yarn/releases
 !.yarn/versions
 
+# Domain-specific configs
+/nginx-configs/
+
 # testing
 /coverage
 
@@ -46,4 +49,4 @@ ARCHITECTURE.md
 DEPLOYMENT.md
 CONTENT-MODEL.md
 INSTRUCTIONS.md
-
+ISSUES.md

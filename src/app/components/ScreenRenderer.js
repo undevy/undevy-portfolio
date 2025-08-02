@@ -21,15 +21,15 @@ const screens = {
 };
 
 export default function ScreenRenderer() {
-  const { currentScreen } = useSession();
+    const { currentScreen, currentDomain } = useSession();
   
   // Get component for current screen
   const ScreenComponent = screens[currentScreen];
   
   // Get window title based on screen
   const getWindowTitle = () => {
-    if (currentScreen === 'Entry') return 'undevy_portfolio';
-    if (currentScreen === 'MainHub') return 'undevy_portfolio';
+    if (currentScreen === 'Entry') return `${currentDomain}_portfolio`;
+    if (currentScreen === 'MainHub') return `${currentDomain}_portfolio`;
     
     // Convert CamelCase to snake_case correctly
     return currentScreen.replace(/([A-Z])/g, (match, p1, offset) => 

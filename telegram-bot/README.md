@@ -1,158 +1,113 @@
-// telegram-bot/README.md
+# Portfolio CMS Telegram Bot v2.0
 
-# Portfolio CMS Telegram Bot
+A modular Telegram bot for managing portfolio content without SSH access. Built with grammY framework.
 
-A Telegram bot for managing portfolio content without SSH access. Built with grammY framework.
+## Architecture Overview
 
-## Architecture
+The bot follows a modular architecture pattern with clear separation of concerns:
 
-### Core Components
+- **bot.js** - Main entry point that orchestrates all modules
+- **config/** - Centralized configuration and constants
+- **commands/** - All bot command implementations
+- **handlers/** - Event handling and conversation flows
+- **services/** - External API integrations
+- **utils/** - Reusable utility functions
+- **middleware/** - Request preprocessing (auth, logging)
 
-1. bot.js - Main bot application
-   - Command handlers for all bot operations
-   - Message processing and routing
-   - Integration with Admin API
+## Key Features
 
-2. stateManager.js - Conversation state management
-   - In-memory storage for multi-step conversations
-   - Automatic cleanup of stale sessions (1 hour timeout)
-   - Support for different conversation flows
+### Content Management
+- Create, edit, and delete case studies with interactive wizards
+- Preview content before making changes
+- Automatic validation and error handling
 
-### State Management
+### Version Control
+- Automatic backups on every change
+- View change history
+- Rollback to any previous version
+- Compare differences between versions
 
-The bot uses a simple state machine approach for handling multi-step conversations:
+### Analytics Integration
+- Real-time visitor notifications
+- Automatic monitoring every 5 minutes
+- Detailed visit information (location, device, pages viewed)
 
-```javascript
-userStates = {
-  userId: {
-    command: 'add_case',        // Current command
-    currentStep: 'waiting_title', // Current step in conversation
-    data: {},                   // Collected data
-    startedAt: timestamp        // For cleanup
-  }
-}
-```
+### Security
+- Telegram User ID based authentication
+- Bearer token for API access
+- Confirmation prompts for destructive operations
 
-### API Integration
-
-The bot communicates with the portfolio's Admin API:
-- Endpoint: `/api/admin/content`
-- Authentication: Bearer token
-- Operations: GET (read), PUT (full update), PATCH (partial update)
-
-## Development Setup
+## Development
 
 ### Prerequisites
 - Node.js 20.x or later
 - Telegram Bot Token (from @BotFather)
-- Access to portfolio API
 
-### Local Development
+### Local Setup
 
-1. Create test bot via @BotFather
-2. Configure environment:
+1. Install dependencies:
    ```bash
-   cp .env.example .env.local
-   # Edit .env.local with test bot token
+   npm install
    ```
 
-3. Start portfolio locally:
+2. Create environment file:
    ```bash
-   cd ..
-   npm run dev
+   cp .env.example .env
    ```
 
-4. Start bot:
-   ```bash
-   node bot.js
+3. Configure your `.env`:
+   ```
+   TELEGRAM_BOT_TOKEN=your-bot-token
+   API_URL=http://localhost:3000/api/admin/content
+   API_TOKEN=your-api-token
+   ADMIN_USER_ID=your-telegram-id
+   MATOMO_TOKEN=your-matomo-token
    ```
 
-### Environment Variables
+4. Run the bot:
+   ```bash
+   npm start
+   ```
 
-```env
-TELEGRAM_BOT_TOKEN=your-bot-token
-API_URL=http://localhost:3000/api/admin/content
-API_TOKEN=your-api-token
-ADMIN_USER_ID=your-telegram-id
-BACKUP_DIR=./test-backups
+### Testing
+
+Always test changes locally before deploying:
+
+1. Start the portfolio locally (`npm run dev` in parent directory)
+2. Run the bot with test configuration
+3. Test all major command flows
+4. Verify error handling works correctly
+
+## Deployment
+
+The bot is deployed via GitHub Actions:
+
+1. Commit and push changes to main branch
+2. GitHub Actions automatically deploys to server
+3. Bot restarts via PM2
+
+Monitor deployment:
+```bash
+pm2 logs portfolio-cms-bot --lines 100
 ```
 
 ## Command Reference
 
-### Content Viewing
-- `/get` - Download complete content.json
-- `/status` - System status and statistics
-- `/list_cases` - List all case studies
-- `/preview [id]` - View case study details
+See main README or use `/help` command in the bot for full command list.
 
-### Content Management
-- `/add_case` - Create new case study
-- `/edit_case [id]` - Edit existing case
-- `/delete_case [id]` - Delete case with confirmation
+## Troubleshooting
 
-### Version Control
-- `/history` - View last 10 versions
-- `/rollback N` - Restore version N
-- `/diff N [M]` - Compare versions
+### Bot not responding
+- Check PM2 status: `pm2 status`
+- View logs: `pm2 logs portfolio-cms-bot`
+- Verify environment variables are set
 
-### Conversation Control
-- `/cancel` - Abort active conversation
-- `/skip` - Skip optional field
-- `/keep` - Keep existing value (edit mode)
+### API connection errors
+- Ensure portfolio is running
+- Check API_TOKEN matches server configuration
+- Verify network connectivity
 
-## Conversation Flows
-
-### Add Case Flow
-1. Ask for case ID (required, validated)
-2. Ask for title (optional)
-3. Ask for description (optional)
-4. Ask for metrics (optional)
-5. Ask for tags (comma-separated, optional)
-6. Ask for challenge (optional)
-7. Ask for approach (multi-line, optional)
-8. Ask for solution (optional)
-9. Ask for results (multi-line, optional)
-10. Ask for learnings (optional)
-
-### Edit Case Flow
-- Shows current value for each field
-- User can enter new value or `/keep` to retain
-- Tracks changes and shows summary
-
-### Delete Case Flow
-- Shows complete preview of case
-- Warns if case is used in profiles
-- Requires confirmation via inline keyboard
-
-## Error Handling
-
-The bot handles various error scenarios:
-- Invalid case ID format
-- Duplicate case IDs
-- Missing required fields
-- API connection failures
-- Invalid user input
-
-All errors are logged and user-friendly messages are displayed.
-
-## Security
-
-- User authentication via Telegram ID whitelist
-- API authentication via Bearer token
-- No sensitive data stored in bot memory
-- Automatic session cleanup
-- Confirmation for destructive operations
-
-## Production Deployment
-
-The bot runs on the server via PM2:
-
-```bash
-pm2 start bot.js --name "portfolio-cms-bot"
-pm2 save
-```
-
-Logs can be viewed with:
-```bash
-pm2 logs portfolio-cms-bot
-```
+### Analytics not working
+- Confirm MATOMO_TOKEN is set correctly
+- Test connection with `/test_matomo`
+- Check Matomo API is accessible

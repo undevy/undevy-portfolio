@@ -14,7 +14,23 @@ const getTimestamp = () => {
   });
 };
 
+// Optional: mapping per domain
+const domainConfigs = {
+  'undevy.com': {
+    brandingToken: '$undevy_portfolio',
+    telegram: 'https://t.me/undevy',
+  },
+  'foxous.design': {
+    brandingToken: '$foxous_portfolio',
+    telegram: 'https://t.me/foxous',
+  },
+};
+
 export function SessionProvider({ children }) {
+  // ========== DOMAIN ==========
+  const [currentDomain, setCurrentDomain] = useState(null);
+  const [domainData, setDomainData] = useState(null); // like branding, links
+
   // ========== SESSION STATE ==========
   const [sessionData, setSessionData] = useState(null);
   
@@ -42,42 +58,45 @@ export function SessionProvider({ children }) {
     setLogEntries(prev => [...prev, newEntry].slice(-20));
   }, []);
   
+  // ========== DOMAIN DETECTION ==========
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      setCurrentDomain(hostname);
+      if (domainConfigs[hostname]) {
+        setDomainData(domainConfigs[hostname]);
+        addLog(`DOMAIN DETECTED: ${hostname}`);
+      } else {
+        addLog(`UNKNOWN DOMAIN: ${hostname}`);
+      }
+    }
+  }, [addLog]);
+  
   // ========== NAVIGATION FUNCTIONS ==========
   const navigate = useCallback((screen, addToHistory = true) => {
-    // Don't navigate if already on this screen
     if (currentScreen === screen) return;
     
-    // Add current screen to history if needed
     if (addToHistory && currentScreen !== 'Entry') {
       setNavigationHistory(prev => [...prev, currentScreen]);
     }
     
-    // Navigate to new screen
     setCurrentScreen(screen);
     setScreensVisitedCount(prev => prev + 1);
     addLog(`NAVIGATE: ${currentScreen} → ${screen}`);
     
-    // Update hash while preserving query params
     if (typeof window !== 'undefined') {
-      if (screen !== 'Entry') {
-        const currentUrl = new URL(window.location.href);
-        currentUrl.hash = screen;
-        window.history.replaceState({}, '', currentUrl.toString());
-      } else {
-        const currentUrl = new URL(window.location.href);
-        currentUrl.hash = '';
-        window.history.replaceState({}, '', currentUrl.toString());
-      }
+      const currentUrl = new URL(window.location.href);
+      currentUrl.hash = screen !== 'Entry' ? screen : '';
+      window.history.replaceState({}, '', currentUrl.toString());
     }
     
-    // Clear selections when navigating to main screens
     if (['MainHub', 'Entry'].includes(screen)) {
       setSelectedCase(null);
       setSelectedRole(null);
       setSelectedSkill(null);
     }
   }, [currentScreen, addLog]);
-  
+
   const goBack = useCallback(() => {
     if (navigationHistory.length > 0) {
       const newHistory = [...navigationHistory];
@@ -88,24 +107,16 @@ export function SessionProvider({ children }) {
       setCurrentScreen(previousScreen);
       setScreensVisitedCount(prev => prev + 1);
       
-      // Update hash
       if (typeof window !== 'undefined') {
-        if (previousScreen !== 'Entry') {
-          const currentUrl = new URL(window.location.href);
-          currentUrl.hash = previousScreen;
-          window.history.replaceState({}, '', currentUrl.toString());
-        } else {
-          const currentUrl = new URL(window.location.href);
-          currentUrl.hash = '';
-          window.history.replaceState({}, '', currentUrl.toString());
-        }
+        const currentUrl = new URL(window.location.href);
+        currentUrl.hash = previousScreen !== 'Entry' ? previousScreen : '';
+        window.history.replaceState({}, '', currentUrl.toString());
       }
     } else {
-      // No history - go to MainHub
       navigate('MainHub', false);
     }
   }, [navigationHistory, currentScreen, navigate, addLog]);
-  
+
   const goHome = useCallback(() => {
     addLog('NAVIGATE HOME');
     setNavigationHistory([]);
@@ -120,14 +131,14 @@ export function SessionProvider({ children }) {
       window.history.replaceState({}, '', currentUrl.toString());
     }
   }, [addLog]);
-  
+
   // ========== HASH ROUTING ==========
   useEffect(() => {
     if (!sessionData || typeof window === 'undefined') return;
     
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1);
-      if (hash && hash !== currentScreen && sessionData) {
+      if (hash && hash !== currentScreen) {
         setCurrentScreen(hash);
         setScreensVisitedCount(prev => prev + 1);
         addLog(`HASH NAVIGATE: ${currentScreen} → ${hash}`);
@@ -136,7 +147,6 @@ export function SessionProvider({ children }) {
     
     window.addEventListener('hashchange', handleHashChange);
     
-    // Check initial hash
     const initialHash = window.location.hash.slice(1);
     if (initialHash && initialHash !== currentScreen) {
       setCurrentScreen(initialHash);
@@ -146,14 +156,14 @@ export function SessionProvider({ children }) {
     
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [sessionData, currentScreen, addLog]);
-  
+
   // ========== UI FUNCTIONS ==========
   const toggleTheme = useCallback(() => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
     addLog(`THEME CHANGED: ${newTheme.toUpperCase()}`);
   }, [theme, addLog]);
-  
+
   const toggleSection = useCallback((sectionId) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -161,7 +171,7 @@ export function SessionProvider({ children }) {
     }));
     addLog(`SECTION ${expandedSections[sectionId] ? 'COLLAPSED' : 'EXPANDED'}: ${sectionId}`);
   }, [expandedSections, addLog]);
-  
+
   const setTab = useCallback((screenId, tabId) => {
     setActiveTab(prev => ({
       ...prev,
@@ -169,40 +179,43 @@ export function SessionProvider({ children }) {
     }));
     addLog(`TAB SELECTED: ${tabId} on ${screenId}`);
   }, [addLog]);
-  
+
   // ========== SESSION FUNCTIONS ==========
   const endSession = useCallback(() => {
-  addLog('SESSION TERMINATED');
-  setSessionData(null);
-  setNavigationHistory([]);
-  setCurrentScreen('Entry');
-  setSelectedCase(null);
-  setSelectedRole(null);
-  setSelectedSkill(null);
-  setExpandedSections({});
-  setActiveTab({});
-  setScreensVisitedCount(1);
-  if (typeof window !== 'undefined') {
-    // Полностью очищаем URL от code и hash
-    const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.delete('code'); // Удаляем параметр code
-    currentUrl.hash = ''; // Удаляем hash
-    window.history.replaceState({}, '', currentUrl.toString());
-  }
-}, [addLog]);
-  
+    addLog('SESSION TERMINATED');
+    setSessionData(null);
+    setNavigationHistory([]);
+    setCurrentScreen('Entry');
+    setSelectedCase(null);
+    setSelectedRole(null);
+    setSelectedSkill(null);
+    setExpandedSections({});
+    setActiveTab({});
+    setScreensVisitedCount(1);
+    if (typeof window !== 'undefined') {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.delete('code');
+      currentUrl.hash = '';
+      window.history.replaceState({}, '', currentUrl.toString());
+    }
+  }, [addLog]);
+
   // ========== INITIALIZATION ==========
   useEffect(() => {
     addLog('SYSTEM INITIALIZED');
     addLog('PORTFOLIO v2.1.0 LOADED');
   }, [addLog]);
-  
+
   // ========== CONTEXT VALUE ==========
   const value = {
     // Session data
     sessionData,
     setSessionData,
-    
+
+    // Domain
+    currentDomain,
+    domainData,
+
     // Navigation
     currentScreen,
     navigationHistory,
@@ -210,7 +223,7 @@ export function SessionProvider({ children }) {
     navigate,
     goBack,
     goHome,
-    
+
     // Selected items
     selectedCase,
     setSelectedCase,
@@ -218,7 +231,7 @@ export function SessionProvider({ children }) {
     setSelectedRole,
     selectedSkill,
     setSelectedSkill,
-    
+
     // UI state
     theme,
     toggleTheme,
@@ -226,16 +239,16 @@ export function SessionProvider({ children }) {
     toggleSection,
     activeTab,
     setTab,
-    
+
     // System log
     logEntries,
     addLog,
     screensVisitedCount,
-    
+
     // Session management
     endSession,
   };
-  
+
   return (
     <SessionContext.Provider value={value}>
       {children}

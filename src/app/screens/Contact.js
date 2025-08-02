@@ -6,15 +6,25 @@ import { Mail, Globe, Calendar, ExternalLink, Copy } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Contact() {
-  const { sessionData, theme, addLog } = useSession();
+  const { sessionData, theme, addLog, domainData } = useSession();
   const [emailCopied, setEmailCopied] = useState(false);
 
   const contactData = sessionData?.contact || {};
 
+  const getDomainSpecificContact = () => {
+    return {
+      ...contactData,
+      website: domainData?.telegram ? domainData.website : contactData.website,
+      telegram: domainData?.telegram || contactData.telegram,
+    };
+  };
+
+  const domainContact = getDomainSpecificContact();
+
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(contactData.email);
+    navigator.clipboard.writeText(domainContact.email);
     setEmailCopied(true);
-    addLog(`EMAIL COPIED: ${contactData.email}`);
+    addLog(`EMAIL COPIED: ${domainContact.email}`);
     setTimeout(() => setEmailCopied(false), 2000);
   };
 
@@ -25,8 +35,8 @@ export default function Contact() {
 
   const handleScheduleCall = () => {
     addLog('CALENDAR: Schedule request initiated');
-    if (contactData.calendar_link) {
-      window.open(contactData.calendar_link, '_blank');
+    if (domainContact.calendar_link) {
+      window.open(domainContact.calendar_link, '_blank');
     }
   };
 
@@ -57,7 +67,7 @@ export default function Contact() {
               theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
             }`} />
             <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-              {contactData.email}
+              {domainContact.email}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -75,7 +85,7 @@ export default function Contact() {
         </button>
 
         <button
-          onClick={() => handleExternalLink('Portfolio website', contactData.website)}
+          onClick={() => handleExternalLink('Portfolio website', domainContact.website)}
           className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${
             theme === 'dark'
               ? 'border-dark-border hover:bg-dark-hover'
@@ -87,7 +97,7 @@ export default function Contact() {
               theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
             }`} />
             <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-              {contactData.website?.replace('https://', '')}
+              {domainContact.website?.replace('https://', '')}
             </span>
           </div>
           <ExternalLink className={`w-4 h-4 ${
@@ -125,33 +135,33 @@ export default function Contact() {
             $location:
           </span>
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {contactData.location}
+            {domainContact.location}
           </span>
 
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $work_type:
           </span>
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {contactData.availability?.work_type}
+            {domainContact.availability?.work_type}
           </span>
 
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $target_comp:
           </span>
           <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {contactData.availability?.target_comp}
+            {domainContact.availability?.target_comp}
           </span>
 
           <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
             $start_date:
           </span>
           <span className={theme === 'dark' ? 'text-dark-success' : 'text-light-success'}>
-            {contactData.availability?.status}
+            {domainContact.availability?.status}
           </span>
         </div>
       </div>
 
-      {contactData.social_links && (
+      {domainContact.social_links && (
         <div className={`mt-3 p-3 border rounded ${
           theme === 'dark' ? 'border-dark-border' : 'border-light-border'
         }`}>
@@ -161,7 +171,7 @@ export default function Contact() {
             $social_links
           </h3>
           <div className="flex gap-2">
-            {Object.entries(contactData.social_links).map(([platform, url]) => (
+            {Object.entries(domainContact.social_links).map(([platform, url]) => (
               <button
                 key={platform}
                 onClick={() => handleExternalLink(platform, url)}

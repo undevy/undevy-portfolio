@@ -5,13 +5,14 @@ import { useSession } from '../context/SessionContext';
 import { Sun, X, ArrowLeft } from 'lucide-react';
 
 export default function TerminalWindow({ title, children }) {
-  const { 
+   const { 
     theme, 
     toggleTheme, 
     goBack, 
     endSession, 
     currentScreen,
-    navigationHistory 
+    navigationHistory,
+    currentDomain 
   } = useSession();
 
   // Show back button if we have navigation history AND we're not on Entry screen

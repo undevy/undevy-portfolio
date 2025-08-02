@@ -14,8 +14,8 @@ This project is an interactive portfolio experience designed to look and feel li
 
 ## Live Demo
 
-- Portfolio: [`https://undevy.com`](https://undevy.com)
-- Analytics Dashboard: [`https://analytics.undevy.com`](https://analytics.undevy.com)
+- Portfolio: `https://your-domain.com`
+- Analytics Dashboard: `https://analytics.your-domain.com`
 
 ## Tech Stack
 
@@ -35,12 +35,12 @@ This project is an interactive portfolio experience designed to look and feel li
 ## System Architecture
 
 ### Application Flow
-1. User visits `undevy.com?code=XYZ123`
+1. User visits `your-domain.com?code=XYZ123`
 2. Next.js serves the SPA shell
 3. Client checks for access code and authenticates via `/api/session`
 4. API merges user profile with global data and returns complete session data
 5. Application enters SPA mode - all navigation is client-side
-6. URLs update with hash routing: `undevy.com?code=XYZ123#Introduction`
+6. URLs update with hash routing: `your-domain.com?code=XYZ123#Introduction`
 
 ### SPA Architecture
 ```
@@ -73,11 +73,11 @@ src/
                            |
                            |--> [ Nginx (SSL @ Port 443) ]
                                   |
-                                  |--> route: undevy.com --> [ PM2 ] -> [ Next.js App (Port 3000) ]
+                                  |--> route: your-domain.com --> [ PM2 ] -> [ Next.js App (Port 3000) ]
                                   |      |
                                   |      '--> API reads & merges --> [ /home/undevy/content.json ]
                                   |
-                                  '--> route: analytics.undevy.com -> [ Docker ] -> [ Matomo Service ]
+                                  '--> route: analytics.your-domain.com -> [ Docker ] -> [ Matomo Service ]
 ```
 
 ## Project Status & Roadmap
@@ -127,20 +127,39 @@ The project is developed in iterative phases. The content plan is based on a det
 
 The portfolio includes a Telegram-based CMS for easy content updates without technical knowledge.
 
-### Setting Up the CMS Bot
+### Bot Architecture (v2.0)
 
-1. Create a bot via @BotFather on Telegram
-2. Configure the bot environment:
-   ```bash
-   cd telegram-bot
-   cp .env.example .env
-   # Edit .env with your bot token and settings
-   ```
-3. Start the bot:
-   ```bash
-   npm install
-   npm start
-   ```
+The bot has been refactored into a modular architecture for better maintainability:
+
+```
+telegram-bot/
+├── bot.js                    # Main orchestrator
+├── config/
+│   └── constants.js          # All configuration and constants
+├── commands/                 # Bot command handlers
+│   ├── system.js            # Basic commands (start, status, help)
+│   ├── content.js           # Content management commands
+│   ├── analytics.js         # Analytics integration
+│   └── index.js             # Command registration
+├── handlers/                 # Event and interaction handlers
+│   ├── callbacks.js         # Inline button handlers
+│   ├── conversations.js     # Multi-step dialog flows
+│   └── errors.js            # Global error handling
+├── services/                 # External service integrations
+│   ├── api.js               # Portfolio API client
+│   ├── backup.js            # Backup management
+│   └── matomo.js            # Analytics API client
+├── utils/                    # Helper functions
+│   ├── format.js            # Text formatting utilities
+│   ├── validators.js        # Input validation
+│   └── helpers.js           # General utilities
+├── middleware/
+│   └── auth.js              # Authorization checks
+├── stateManager.js          # Conversation state management
+└── analytics.js             # Real-time visitor monitoring
+```
+
+This modular structure makes the bot easier to maintain, test, and extend with new features.
 
 #### Available Commands
 

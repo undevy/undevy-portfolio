@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 export default function Entry() {
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { theme, addLog } = useSession();
+  const { theme, addLog, currentDomain, domainData } = useSession();
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -29,8 +29,9 @@ export default function Entry() {
   };
 
   const handleGetCode = () => {
-    addLog('EXTERNAL LINK: Telegram @undevy');
-    window.open('https://t.me/undevy', '_blank');
+    const telegramUrl = domainData?.telegram || 'https://t.me/undevy';
+    addLog(`EXTERNAL LINK: Telegram ${telegramUrl}`);
+    window.open(telegramUrl, '_blank');
   };
 
   return (

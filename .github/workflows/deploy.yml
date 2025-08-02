@@ -68,8 +68,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "telegram-bot/bot.js,telegram-bot/package.json,telegram-bot/package-lock.json"
-          target: "/home/undevy"
-          strip_components: 1
+          target: "/home/undevy/telegram-bot"
 
       # Step 3: Install production dependencies and restart the bot process
       - name: Step 3 - Finalize bot deployment
@@ -84,3 +83,11 @@ jobs:
             cd /home/undevy/telegram-bot
             npm install --production
             pm2 restart portfolio-cms-bot
+            
+      # Step 4: Debug - Check bot directory contents
+      - name: Debug - Check bot directory
+        uses: appleboy/ssh-action@master
+        with:
+          script: |
+            echo "Bot directory contents:"
+            ls -la /home/undevy/telegram-bot/
